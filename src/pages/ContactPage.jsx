@@ -12,7 +12,7 @@ export default function ContactPage() {
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
-  
+
   // Accordion active state for FAQ items
   const [activeFaq, setActiveFaq] = useState(null);
 
@@ -43,27 +43,27 @@ export default function ContactPage() {
 
   const faqItems = [
     {
-      q: "Paano makakabili ng produkto ng VHermosa Bright Corp?",
-      a: "Upang makabili ng produkto ng VHermosa Bright Corp, makipag-ugnayan sa aming property specialist sa pamamagitan ng aming website o tawagan kami para sa detalyadong impormasyon at tulong sa proseso ng pagbili."
+      q: "Paano makakabili ng proyekto ng Bright Hermosa Realty Inc.?",
+      a: "Upang makabili ng proyekto ng Bright Hermosa Realty Inc., makipag-ugnayan sa aming property specialist sa pamamagitan ng aming website o tawagan kami para sa detalyadong impormasyon at tulong sa proseso ng pagbili."
     },
     {
-      q: "Paano ang kalidad ng mga produkto ng VHermosa Bright Corp?",
-      a: "Ang kalidad ng mga produkto ng VHermosa Bright Corp. ay mataas, na may pangako sa world-class amenities at maingat na disenyo sa mga leisure lifestyle communities, na nagbibigay ng komportable at marangyang karanasan sa mga residente."
+      q: "Paano ang kalidad ng mga proyekto ng Bright Hermosa Realty Inc.?",
+      a: "Ang kalidad ng mga proyekto ng Bright Hermosa Realty Inc. ay mataas, na may pangako sa world-class amenities at maingat na disenyo sa mga leisure lifestyle communities, na nagbibigay ng komportable at marangyang karanasan sa mga residente."
     },
     {
-      q: "Anong mga produkto ang pinaka-popular?",
+      q: "Anong mga proyekto ang pinaka-popular?",
       a: "Ang aming pinaka-popular na mga proyekto ay ang EastWest Breeze Leisure Farm & Resort at ang Mountain View Leisure Community."
     },
     {
-      q: "May mga outlet ba ang VHermosa Bright Corp sa malls?",
-      a: "Walang mga outlet ang VHermosa Bright Corp sa malls. Ang kumpanya ay nakatuon sa pagbuo ng mga leisure lifestyle communities at nag-aalok ng mga property investment opportunities sa mga magagandang lokasyon."
+      q: "May mga outlet ba ang Bright Hermosa Realty Inc. sa malls?",
+      a: "Walang mga outlet ang Bright Hermosa Realty Inc. sa malls. Ang kumpanya ay nakatuon sa pagbuo ng mga leisure lifestyle communities at nag-aalok ng mga property investment opportunities sa mga magagandang lokasyon."
     }
   ];
 
   return (
     <div className="min-h-screen bg-surface text-on-surface font-body-md antialiased flex flex-col">
       <Navbar onOpenModal={() => window.scrollTo({ top: document.getElementById('inquiry-form').offsetTop - 100, behavior: 'smooth' })} />
-      
+
       <main className="w-full flex-grow">
         {/* Hero Section */}
         <section className="w-full bg-[#E8F5F0] py-section-gap relative overflow-hidden">
@@ -71,7 +71,7 @@ export default function ContactPage() {
             <div className="max-w-3xl">
               <h1 className="font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-stack-md leading-tight">Get in Touch</h1>
               <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
-                Experience seamless communication at VHermosa Bright Corp., where clear channels promote collaboration and understanding. Connect effortlessly with our team, ensuring your needs are heard and met every step of the way.
+                Experience seamless communication at Bright Hermosa Realty Inc., where clear channels promote collaboration and understanding. Connect effortlessly with our team, ensuring your needs are heard and met every step of the way.
               </p>
             </div>
           </div>
@@ -82,7 +82,7 @@ export default function ContactPage() {
         {/* Contact & Form Bento Grid */}
         <section className="max-w-7xl mx-auto px-margin-page py-section-gap" id="inquiry-form">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
-            
+
             {/* Contact Info Cards */}
             <div className="lg:col-span-4 flex flex-col gap-gutter">
               {/* Address */}
@@ -143,16 +143,16 @@ export default function ContactPage() {
                 <div className="animate-fadeIn">
                   <h2 className="font-headline-md text-headline-md text-primary mb-stack-sm">Send an Inquiry</h2>
                   <p className="font-body-md text-body-md text-on-surface-variant mb-stack-lg">Fill out the form below and our property specialists will get back to you shortly.</p>
-                  
+
                   <form onSubmit={handleSubmit} className="space-y-stack-md">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
                       <div>
                         <label className="block font-subhead-sm text-subhead-sm text-on-surface mb-2" htmlFor="firstName">First Name *</label>
-                        <input 
-                          className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md" 
-                          id="firstName" 
-                          placeholder="Juan" 
-                          type="text" 
+                        <input
+                          className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md"
+                          id="firstName"
+                          placeholder="Juan"
+                          type="text"
                           required
                           value={formData.firstName}
                           onChange={handleInputChange}
@@ -160,26 +160,26 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <label className="block font-subhead-sm text-subhead-sm text-on-surface mb-2" htmlFor="lastName">Last Name *</label>
-                        <input 
-                          className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md" 
-                          id="lastName" 
-                          placeholder="Dela Cruz" 
-                          type="text" 
+                        <input
+                          className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md"
+                          id="lastName"
+                          placeholder="Dela Cruz"
+                          type="text"
                           required
                           value={formData.lastName}
                           onChange={handleInputChange}
                         />
                       </div>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
                       <div>
                         <label className="block font-subhead-sm text-subhead-sm text-on-surface mb-2" htmlFor="email">Email Address *</label>
-                        <input 
-                          className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md" 
-                          id="email" 
-                          placeholder="juan@example.com" 
-                          type="email" 
+                        <input
+                          className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md"
+                          id="email"
+                          placeholder="juan@example.com"
+                          type="email"
                           required
                           value={formData.email}
                           onChange={handleInputChange}
@@ -187,10 +187,10 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <label className="block font-subhead-sm text-subhead-sm text-on-surface mb-2" htmlFor="phone">Phone Number</label>
-                        <input 
-                          className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md" 
-                          id="phone" 
-                          placeholder="09XX XXX XXXX" 
+                        <input
+                          className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md"
+                          id="phone"
+                          placeholder="09XX XXX XXXX"
                           type="tel"
                           value={formData.phone}
                           onChange={handleInputChange}
@@ -200,8 +200,8 @@ export default function ContactPage() {
 
                     <div>
                       <label className="block font-subhead-sm text-subhead-sm text-on-surface mb-2" htmlFor="interest">Property of Interest *</label>
-                      <select 
-                        className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md text-on-surface" 
+                      <select
+                        className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md text-on-surface"
                         id="interest"
                         required
                         value={formData.interest}
@@ -216,10 +216,10 @@ export default function ContactPage() {
 
                     <div>
                       <label className="block font-subhead-sm text-subhead-sm text-on-surface mb-2" htmlFor="message">Message *</label>
-                      <textarea 
-                        className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md resize-none" 
-                        id="message" 
-                        placeholder="How can we help you?" 
+                      <textarea
+                        className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md resize-none"
+                        id="message"
+                        placeholder="How can we help you?"
                         rows="5"
                         required
                         value={formData.message}
@@ -229,8 +229,8 @@ export default function ContactPage() {
 
                     <div className="pt-stack-sm">
                       <p className="font-body-sm text-body-sm text-on-surface-variant mb-stack-md">By submitting you agree to our <a className="text-primary underline hover:opacity-85" href="#">privacy policy</a>.</p>
-                      <button 
-                        className="w-full md:w-auto bg-primary-container text-on-primary-container font-subhead-lg text-subhead-lg px-8 py-4 rounded-lg hover:bg-primary hover:text-on-primary transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm" 
+                      <button
+                        className="w-full md:w-auto bg-primary-container text-on-primary-container font-subhead-lg text-subhead-lg px-8 py-4 rounded-lg hover:bg-primary hover:text-on-primary transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                         type="submit"
                       >
                         Send Message
@@ -247,10 +247,10 @@ export default function ContactPage() {
 
         {/* Map Section */}
         <section className="w-full h-96 relative overflow-hidden border-t border-b border-outline-variant/30">
-          <img 
-            className="w-full h-full object-cover" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD89WliQNDaN6m_sM4bm6yksYZBeQ_c0gcCucxuRPPu1hHpXrlI4KRMgPQG-R9jdxoxRxyph1rqjLKkLdKHFXl4oOA1v14Kkp9anOUkAgIkmVSS2wanLeJDbjfjkCtBN_iS0a0wCb8d-oU8Id-Tvw2Z6kaqCyz_VvXfyKafX8QtDcouEXEDuz4ziLBQVh-5eJxt_VkGG8hAmqb6yzbx6FEhunmef-Ew4Zy9Be3x6YOVqOK7cs3UmwfUqasGWot3aDcGltIDztPENdE" 
-            alt="Map location of Indang, Cavite, Philippines" 
+          <img
+            className="w-full h-full object-cover"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD89WliQNDaN6m_sM4bm6yksYZBeQ_c0gcCucxuRPPu1hHpXrlI4KRMgPQG-R9jdxoxRxyph1rqjLKkLdKHFXl4oOA1v14Kkp9anOUkAgIkmVSS2wanLeJDbjfjkCtBN_iS0a0wCb8d-oU8Id-Tvw2Z6kaqCyz_VvXfyKafX8QtDcouEXEDuz4ziLBQVh-5eJxt_VkGG8hAmqb6yzbx6FEhunmef-Ew4Zy9Be3x6YOVqOK7cs3UmwfUqasGWot3aDcGltIDztPENdE"
+            alt="Map location of Indang, Cavite, Philippines"
           />
           <div className="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
         </section>
@@ -265,8 +265,8 @@ export default function ContactPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter max-w-5xl mx-auto">
             {faqItems.map((item, idx) => (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 className="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/30 hover:border-primary/30 transition-all duration-300 cursor-pointer flex flex-col"
                 onClick={() => toggleFaq(idx)}
               >
@@ -276,11 +276,10 @@ export default function ContactPage() {
                   </span>
                   <span>{item.q}</span>
                 </h3>
-                
-                <div 
-                  className={`transition-all duration-300 overflow-hidden ${
-                    activeFaq === idx ? 'max-h-40 mt-2 opacity-100' : 'max-h-0 opacity-0'
-                  }`}
+
+                <div
+                  className={`transition-all duration-300 overflow-hidden ${activeFaq === idx ? 'max-h-40 mt-2 opacity-100' : 'max-h-0 opacity-0'
+                    }`}
                 >
                   <p className="font-body-md text-body-md text-on-surface-variant ml-7 border-t border-outline-variant/10 pt-2 leading-relaxed">
                     {item.a}
@@ -291,7 +290,7 @@ export default function ContactPage() {
           </div>
         </section>
       </main>
-      
+
       <Footer />
     </div>
   );

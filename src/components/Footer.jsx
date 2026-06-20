@@ -24,14 +24,12 @@ export default function Footer() {
             <li><Link className="font-body-md text-on-primary-container hover:text-secondary-fixed transition-colors duration-200" to="/">Home</Link></li>
             <li><Link className="font-body-md text-on-primary-container hover:text-secondary-fixed transition-colors duration-200" to="/about">About Us</Link></li>
             <li><a className="font-body-md text-on-primary-container hover:text-secondary-fixed transition-colors duration-200" href="/#properties">Properties</a></li>
-            <li><Link className="font-body-md text-on-primary-container hover:text-secondary-fixed transition-colors duration-200" to="/blog">Blog</Link></li>
           </ul>
         </div>
         
         <div className="col-span-1">
           <h4 className="font-subhead-lg text-subhead-lg mb-4 text-secondary-fixed">Support</h4>
           <ul className="space-y-2">
-            <li><Link className="font-body-md text-on-primary-container hover:text-secondary-fixed transition-colors duration-200" to="/faq">FAQ</Link></li>
             <li><Link className="font-body-md text-on-primary-container hover:text-secondary-fixed transition-colors duration-200" to="/careers">Careers</Link></li>
             <li><Link className="font-body-md text-on-primary-container hover:text-secondary-fixed transition-colors duration-200" to="/contact">Contact Us</Link></li>
           </ul>

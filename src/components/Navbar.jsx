@@ -37,8 +37,6 @@ export default function Navbar({ onOpenModal }) {
           <Link className={linkClass('/')} to="/">Home</Link>
           <Link className={linkClass('/properties')} to="/properties">Properties</Link>
           <Link className={linkClass('/about')} to="/about">About Us</Link>
-          <Link className={linkClass('/blog')} to="/blog">Blog</Link>
-          <Link className={linkClass('/faq')} to="/faq">FAQ</Link>
           <Link className={linkClass('/contact')} to="/contact">Contact Us</Link>
         </div>
 
@@ -84,20 +82,6 @@ export default function Navbar({ onOpenModal }) {
             onClick={() => setMobileMenuOpen(false)}
           >
             About Us
-          </Link>
-          <Link 
-            className={mobileLinkClass('/blog')} 
-            to="/blog"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            Blog
-          </Link>
-          <Link 
-            className={mobileLinkClass('/faq')} 
-            to="/faq"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            FAQ
           </Link>
           <Link 
             className={mobileLinkClass('/contact')} 
