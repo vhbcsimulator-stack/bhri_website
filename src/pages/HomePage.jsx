@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { getAllProperties } from '../data/propertiesManager';
+import fallsGif from '../assets/static image/falls.gif';
+
 
 export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -51,7 +53,7 @@ export default function HomePage() {
           <div 
             className="w-full h-full bg-cover bg-center" 
             style={{ 
-              backgroundImage: `url("https://lh3.googleusercontent.com/aida-public/AB6AXuB6BynD1H6n9n7VpIxcmWkTQQSDZVr9QCdsLb-dLAHmEjgD_UMLCI8YI0MQnhT9UNChpoxQko_Jsa2u1bdyqzMm1b1Rgmbt9LSw4W-vxKXkia2F22u5r7QOGsoLCsyoZvCmt2raQqZjhnP7z4ofXPvmrfjeDtdEoj3K4fk-MOv6v6NlxqtxGcd1_xig8-rphCpBUlaJipJU3cHpFqq8_LoIe-7h30Emh9Wf4MLt_dKzsslVKwBmN-76N90XOGZ13QC54fBKlEIxrH0")` 
+              backgroundImage: `url(${fallsGif})` 
             }}
           ></div>
           <div className="absolute inset-0 bg-primary/70 mix-blend-multiply"></div>
