@@ -9,6 +9,7 @@ import {
   uploadMedia
 } from '../data/propertiesManager';
 import { supabase } from '../supabaseClient';
+import { propertiesData } from '../data/propertiesData';
 
 const MAIN_WEBSITE_URL = import.meta.env.VITE_MAIN_WEBSITE_URL || 'http://localhost:5173';
 
@@ -197,6 +198,24 @@ export default function AdminPage() {
     async function load() {
       const list = await getAllProperties();
       setProperties(list);
+
+      // Auto-migrate database records to Bento layout if old list-mv style is detected
+      const mvProperty = list.find(p => p.id === 'mountain-view');
+      if (mvProperty && mvProperty.investment && mvProperty.investment.style === 'list-mv') {
+        console.log("Stale Mountain View investment layout detected in Supabase. Auto-updating to Bento grid...");
+        const latestMv = propertiesData.find(p => p.id === 'mountain-view');
+        if (latestMv) {
+          const updatedMv = { ...mvProperty, investment: latestMv.investment };
+          try {
+            await saveProperty(updatedMv);
+            const newList = await getAllProperties();
+            setProperties(newList);
+            console.log("Supabase successfully migrated Mountain View to Bento investment layout.");
+          } catch (err) {
+            console.error("Failed to auto-migrate database record:", err);
+          }
+        }
+      }
     }
     load();
   }, []);

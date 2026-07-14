@@ -204,31 +204,41 @@ export const propertiesData = [
           phase: "Infrastructure",
           progress: "In Progress",
           description: "Implementation of eco-friendly drainage systems and wide, permeable road networks for long-term durability.",
-          image: "https://lh3.googleusercontent.com/aida-public/AB6AXuANwNno3-9nnceTFWVle97RRPJyxVGndaF7hXWJU6YJvTEP5N9fY14Jh4JVZVFwSP7yWrVhE1vRISu0tsH3dt4YiL6Oh70qGbOIzMCSSaWypEX3ha_ohGRk8k1Rl0F5OHrVIx04fM9mj_wSSsxezlsN0M5VH0gyysfTgnlY4O59u95CiUWHy4aZd2ITzgrxF_wZiPyndhfOIBofDuTkgrPj0FaVZRc_mpz5T0dFwYroTTb_MZrmUtxd5SuTwaHYPIsR8emvm0bulQs"
-        }
+          image: "https://lh3.googleusercontent.com/aida-public/AB6AXuANwNno3-9nnceTFWVle97RRPJyxVGndaF7hXWJU6YJvTEP5N9fY14Jh4JVZVFwSP7yWrVhE1vRISu0tsH3dt4YiL6Oh70qGbOIzMCSSaWypEX3ha_ohGRk8k1Rl0F5OHrVIx04fM9mj_wSSsxezlsN0M5VH0gyysfTgnlY4O59u95CiUWHy4aZd2ITzgrxF_wZiPyndhfOIBofDuTkgrPj0FaVZRc_mpz5T0dFwYroTTb_MZrmUtxd5SuTwaHYPIsR8emvm0bulQs"        }
       ]
     },
     investment: {
       title: "The Smart Choice for Future Generations",
-      description: "Investing in Mountain View Leisure Community is a unique opportunity to combine financial growth with personal fulfillment. By purchasing farm lots in leisure areas, individuals can not only secure a valuable asset but also enjoy recreational activities and a profound connection with nature.",
-      style: "list-mv",
+      style: "bento-ewb-inv",
       items: [
         {
-          icon: "trending_up",
+          type: "large",
           title: "Capital Appreciation",
-          description: "Strategic location in the rising leisure corridor of Batangas."
+          description: "Investing in leisure estates like Mountain View presents a unique opportunity. The rise in demand for properties that offer both lifestyle and investment potential makes this community an attractive option for portfolio diversification.",
+          icon: "trending_up",
+          bgClass: "bg-primary text-on-primary",
+          bgDecoration: "finance_chip"
         },
         {
-          icon: "favorite",
+          type: "small-text",
           title: "Personal Fulfillment",
-          description: "A legacy of wellness and serenity for your family."
+          description: "Rediscover the joy of living in harmony with nature and away from the city's noise. It's an investment in your peace of mind.",
+          bgClass: "bg-tertiary text-on-tertiary"
+        },
+        {
+          type: "small-icon",
+          title: "Secure Legacy",
+          description: "A generational asset that only gets more valuable with time.",
+          icon: "shield_lock",
+          bgClass: "bg-surface-container-high text-primary"
+        },
+        {
+          type: "medium-text",
+          title: "Expanding Tourism Hub",
+          description: "Located in the rapid-growth corridor of Batangas, Mountain View is perfectly positioned to benefit from major infrastructure developments and the booming local tourism sector.",
+          icon: "home_work",
+          bgClass: "bg-secondary-container text-on-secondary-container"
         }
-      ],
-      images: [
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuByhSoZF5XX4pBWMR0jBdJ0P4zkT8w7erurRVb7KyYXellmwYPpGAnf4mL4bPex0SELmULPqaf0Qlm3ZV7vthctIofiacb_rb9WoXzqaaNqUDVdYSKZHq5HJHMC3KtkRruykQZRKLGjsrrFyX07s0AN_ghm2fr1w81-e-DboeGhft3IPoqCiiPaSKA4xGqnFiQRTbOvV8LJSql4FqmKtxJee0BWjJ-NjwOVG805Hleoe1-jSunI8v5XnQ588dCVuV40jrfpNfvDLNQ",
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuC95xmGbfa0dvZVusM_nzzcO3mqzi5wPKEXmS2wa9V2YDn-FnlIZ4JQKoYDm4OFQ0tF_58NGLD0szo0AZ0LLciPgm7WuS5CV4RKQLiCL-kZOMZSP94Zztxd5S-GCvbD_M6BPjjy4bKk2gpODLNuHYwdUSiXgVpxhiLRLchBLMr9-BK5r8AtpCPEQhwB4jt4pK9_dPZMP8iuqs7iBq_RVHwI4w1mBTzsFqk95OL9TLMYn22pRThGP55v0FWQQaB4DtSJGPmy5ORNL34",
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuAPa-aUzzYjCOV77eHKk2zH1R1wfrmJcth9C2Tehfb37RbJFsd5HqymVAcYl9mdINj57sjUq9xBynMd1wy67Ji7OTzEAlzH3uD_iSTvp1LUZF_K1uj1epcbeRrs2IBYkyEJmHxGD-ehb7bS_RRFXXIZ3LellLgrL3w7f-fOXaBRBcVhFyXkMsLyi05oGYOCCIy8Ef1eERO9heXkDGklnPuemS_eZLfas_iKp-4_ImUbddVyJtW1oFmr2EJ-unNkULeTt5rnRVBh_iw",
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDyHtRrF0QrOVRpUVzwA7Hyb-KOc0_tI49xMzf3UdTfyChxK32YQcH45ZbGxfggSrkj0YIVf2uKzzQukWDAmOB0hIpHX-O2I8IEpu5xv1IgnbmEUjgl4nRpGnDr89s6k5rJhbPbiGFGIfT7rgyW6jnkYuTLsyme-Z71KSm-xdCvZ1bbvauU9XolIsiZHQ7PdmkT7sB7vt5r2qqPBLmmJ9p9MrejAr5dztb_4YaDvlza2UxxIsTatOy1E0IO10RwM9EAXe4bhTyk1C0"
       ]
     }
   }

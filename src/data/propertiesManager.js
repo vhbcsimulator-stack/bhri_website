@@ -1,6 +1,17 @@
 import { supabase } from '../supabaseClient';
 import { propertiesData } from './propertiesData';
 
+// Self-cleaning check for stale cache (old investment style)
+try {
+  const localData = localStorage.getItem('bhri_properties');
+  if (localData) {
+    const parsed = JSON.parse(localData);
+    if (Array.isArray(parsed) && parsed.some(p => p.investment && p.investment.style === 'list-mv')) {
+      localStorage.removeItem('bhri_properties');
+    }
+  }
+} catch (e) {}
+
 // Map database column names (snake_case) to client properties (camelCase)
 const mapDbToProperty = (dbRow) => {
   if (!dbRow) return null;
