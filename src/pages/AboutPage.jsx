@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import ChairmanImage from '../assets/static image/board_of_directors_images/chairman-company-profile.png';
+import PresidentImage from '../assets/static image/board_of_directors_images/pres.png';
+import VicePresidentImage from '../assets/static image/board_of_directors_images/vp.png';
+import HeadOfficeImage from '../assets/static image/offices/HEAD-OFFICE-East-West-Breeze-Leisure-Farm-1024x768.jpeg';
+import SalesOfficeMVLCImage from '../assets/static image/offices/SALES-OFFICE-Mountain-View-Leisure-Community-1024x576.png';
+import SalesOfficeRTEImage from '../assets/static image/offices/SALES-OFFICE-Royal-Tagaytay-Estates-1024x576.png';
+import SubsidiaryOfficeImage from '../assets/static image/offices/SUBSIDIARY-OFFICE-Leisure-Community-Philippines-1024x576.png';
 
 export default function AboutPage() {
   const navigate = useNavigate();
@@ -34,6 +41,103 @@ export default function AboutPage() {
     }
   ];
 
+   const boardOfDirectors = [
+    {
+      image: ChairmanImage,
+      name: 'Hernando B. signo',
+      position: 'Chairman of the Board',
+      desc: 'Our Chairman brings a distinguished background in the maritime industry, having risen to the rank of Second Officer and Dynamic Positioning Officer (DPO). Following his maritime career, he entered the real estate industry as an agent and subsequently advanced into investment, collaborating with prominent industry stakeholders. This experience enabled him to recognize the strong growth potential and strategic opportunities within the real estate sector.'
+    },
+    {
+      image: PresidentImage,
+      name: 'Atty. Adrian Carlo Uy Escay',
+      position: 'President & CEO',
+      desc: 'Our esteemed President, brings a distinguished multidisciplinary background and extensive professional experience to the organization. His career spans engineering, business, real estate, and legal practice, with particular expertise in civil and business law. A graduate of San Beda College of Law, he continues to provide strong leadership, strategic insight, and sound legal perspective to the company.'
+    },
+    {
+      image: VicePresidentImage,
+      name: 'Richard Mapusao, REB, REA',
+      position: 'Vice President',
+      desc: 'Our Vice President, Mr. Mapusao, is a licensed Real Estate Broker and Appraiser who brings extensive expertise and experience to the organization. Prior to his current role, he served as a mathematics professor at a prestigious institution in Tagaytay City for 20 years. His strong academic background and real estate credentials make him a valuable asset to our leadership team.'
+    }
+  ];
+
+  const offices = [
+    {
+      image: HeadOfficeImage,
+      name: 'Head Office',
+      address: 'East West Breeze Leisure Farm Eastwest Road, Daine I, Indang, Cavite',
+      contact: '+63 917 170 6920'
+    },
+    {
+      image: SalesOfficeMVLCImage,
+      name: 'Sales Office - Mountain View Leisure Community',
+      address: 'Mountain View Leisure Community Munting lndang, Nasugbu, Batangas',
+      contact: '+63 995 673 1952'
+    },
+    {
+      image: SalesOfficeRTEImage,
+      name: 'Sales Office - Royale Tagaytay Estates',
+      address: 'Royale Tagaytay Estates Alfonso Rd., Alfonso, Cavite',
+      contact: '+63 917 162 6920'
+    },
+    {
+      image: SubsidiaryOfficeImage,
+      name: 'Subsidiary Office',
+      address: 'Leisure Community Philippines Fleruz Building, Jose Abad Santos, Dolores Intersection, San Fernando, Pampanga',
+      contact: '+63 917 162 6920'
+    },
+  ];
+
+  const companyEvents = [
+    {
+      image: HeadOfficeImage,
+      title: 'Head Office Groundbreaking',
+      date: 'March 2023'
+    },
+    {
+      image: SalesOfficeMVLCImage,
+      title: 'Mountain View Sales Office Launch',
+      date: 'August 2023'
+    },
+    {
+      image: SalesOfficeRTEImage,
+      title: 'Royale Tagaytay Estates Site Tour',
+      date: 'January 2024'
+    },
+    {
+      image: SubsidiaryOfficeImage,
+      title: 'Pampanga Subsidiary Opening',
+      date: 'June 2024'
+    }
+  ];
+
+  const [selectedEventIndex, setSelectedEventIndex] = useState(null);
+  const isLightboxOpen = selectedEventIndex !== null;
+
+  const showPrevEvent = useCallback(() => {
+    setSelectedEventIndex((current) =>
+      current === null ? null : (current - 1 + companyEvents.length) % companyEvents.length
+    );
+  }, [companyEvents.length]);
+
+  const showNextEvent = useCallback(() => {
+    setSelectedEventIndex((current) =>
+      current === null ? null : (current + 1) % companyEvents.length
+    );
+  }, [companyEvents.length]);
+
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setSelectedEventIndex(null);
+      if (e.key === 'ArrowLeft') showPrevEvent();
+      if (e.key === 'ArrowRight') showNextEvent();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isLightboxOpen, showPrevEvent, showNextEvent]);
+
   const reasonsToChoose = [
     "Personalized property recommendations.",
     "Clear and accurate information for informed decisions.",
@@ -49,6 +153,27 @@ export default function AboutPage() {
       <Navbar onOpenModal={() => navigate('/contact')} />
       
       <main className="flex-grow">
+      {/* About Us */}
+        <section className="px-margin-page py-section-gap max-w-7xl mx-auto flex flex-col md:flex-row-reverse items-center gap-stack-lg">
+          <div className="w-full md:w-1/2 space-y-stack-md">
+            <h2 className="font-display-lg text-display-lg-mobile md:text-display-lg text-primary leading-tight">
+              About Us
+            </h2>
+            <p className="font-body-lg text-body-lg text-on-surface-variant">
+              VHermosa Bright Corp. is a real estate development established in 2022 devoted to building leisure farm communities that provide the best modern luxurious amenities in rural facilities for clients who wish to have a resort-like leisure farm lot away from the pollution, fast-paced lifestyle, and noise present in metropolitan areas.​
+            </p>
+            <p className="font-body-lg text-body-lg text-on-surface-variant">
+              As much as we want to have the best leisure farm and resort communities, our company believes in sustainability, thus creating real estate developments synchronizing and adapting within nature.
+            </p>
+          </div>
+          <div className="w-full md:w-1/2">
+            <img
+              className="w-full h-auto rounded-xl object-cover shadow-sm border border-outline-variant/30"
+              src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80"
+              alt="Bright Hermosa Realty Inc. office and team"
+            />
+          </div>
+        </section>
         {/* Hero Section */}
         <section className="px-margin-page py-section-gap max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-stack-lg">
           <div className="w-full md:w-1/2 space-y-stack-md">
@@ -147,6 +272,120 @@ export default function AboutPage() {
           </div>
         </section>
 
+         {/* Board of Directors */}
+        <section className="bg-surface-container py-section-gap">
+          <div className="px-margin-page max-w-7xl mx-auto">
+            <div className="text-center max-w-2xl mx-auto mb-stack-lg space-y-stack-sm">
+              <h2 className="font-display-lg text-display-lg-mobile md:text-display-lg text-primary">Board of Directors</h2>
+              <p className="font-body-lg text-body-lg text-on-surface-variant">The leadership team steering Bright Hermosa Realty Inc. toward its mission and vision.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+              {boardOfDirectors.map((member, index) => (
+                <div
+                  key={index}
+                  className="bg-surface border border-outline-variant rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
+                >
+                  <div className="relative w-full h-80 overflow-hidden bg-[radial-gradient(ellipse_at_50%_35%,theme(colors.primary/18%),theme(colors.primary/6%)_60%,theme(colors.surface-container-low)_100%)]">
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/5 h-6 bg-primary/25 rounded-full blur-md"></div>
+                    <img
+                      className="absolute inset-0 h-full w-full object-contain object-bottom px-4 pt-4"
+                      src={member.image}
+                      alt={`${member.name}, ${member.position}`}
+                    />
+                  </div>
+                  <div className="p-6 space-y-2">
+                    <h3 className="font-subhead-lg text-subhead-lg text-primary">{member.name}</h3>
+                    <p className="font-label-caps text-label-caps text-secondary uppercase tracking-wide">{member.position}</p>
+                    <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">{member.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Our Offices */}
+        <section className="px-margin-page py-section-gap max-w-7xl mx-auto">
+          <div className="text-center max-w-2xl mx-auto mb-stack-lg space-y-stack-sm">
+            <h2 className="font-display-lg text-display-lg-mobile md:text-display-lg text-primary">Our Offices</h2>
+            <p className="font-body-lg text-body-lg text-on-surface-variant">Visit us in person - our doors are always open to guide you through your next property move.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+            {offices.map((office, index) => (
+              <div
+                key={index}
+                className="relative flex flex-col sm:flex-row bg-surface border border-outline-variant rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
+              >
+                <div className="sm:w-2/5 h-48 sm:h-auto">
+                  <img
+                    className="w-full h-full object-cover"
+                    src={office.image}
+                    alt={`${office.name} building`}
+                  />
+                </div>
+
+                {/* Perforated ticket-style divider */}
+                <div className="hidden sm:flex flex-col items-center justify-between py-4">
+                  <span className="w-3 h-3 rounded-full bg-surface-container-low -ml-1.5 border border-outline-variant"></span>
+                  <span className="flex-1 border-l border-dashed border-outline-variant my-1"></span>
+                  <span className="w-3 h-3 rounded-full bg-surface-container-low -ml-1.5 border border-outline-variant"></span>
+                </div>
+
+                <div className="flex-1 p-6 space-y-3">
+                  <h3 className="font-subhead-lg font-bold text-lg text-primary">{office.name}</h3>
+                  <div className="flex gap-3 items-start">
+                    <span className="material-symbols-outlined text-primary text-xl shrink-0">location_on</span>
+                    <p className="font-body-sm text-body-sm text-sm leading-relaxed">{office.address}</p>
+                  </div>
+                  <div className="flex gap-3 items-center">
+                    <span className="material-symbols-outlined text-primary text-xl shrink-0">call</span>
+                    <a className="font-body-sm text-body-sm text-sm hover:text-primary transition-colors" href={`tel:${office.contact.replace(/\s+/g, '')}`}>
+                      {office.contact}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Company Events */}
+        <section className="bg-surface-container-low py-section-gap">
+          <div className="px-margin-page max-w-7xl mx-auto">
+            <div className="text-center max-w-2xl mx-auto mb-stack-lg space-y-stack-sm">
+              <h2 className="font-display-lg text-display-lg-mobile md:text-display-lg text-primary">Company Events</h2>
+              <p className="font-body-lg text-body-lg text-on-surface-variant">Moments from our milestones, launches, and community engagements. Click a photo to view it in full.</p>
+            </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-gutter">
+              {companyEvents.map((event, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => setSelectedEventIndex(index)}
+                  className="group relative aspect-square rounded-xl overflow-hidden border border-outline-variant shadow-sm hover:shadow-md transition-shadow duration-300 cursor-pointer"
+                >
+                  <img
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    src={event.image}
+                    alt={event.title}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/0 opacity-80 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute bottom-0 left-0 right-0 p-4 text-left">
+                    <p className="font-subhead-sm text-subhead-sm text-white leading-tight">{event.title}</p>
+                    <p className="font-body-sm text-body-sm text-white/80">{event.date}</p>
+                  </div>
+                  <span className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="material-symbols-outlined text-white text-lg">zoom_in</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Core Values */}
         <section className="px-margin-page py-section-gap max-w-7xl mx-auto">
           <div className="text-center max-w-2xl mx-auto mb-stack-lg space-y-stack-sm">
@@ -219,7 +458,56 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
-      
+       
+       {isLightboxOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 animate-fadeIn"
+          onClick={() => setSelectedEventIndex(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setSelectedEventIndex(null)}
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
+            aria-label="Close"
+          >
+            <span className="material-symbols-outlined">close</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); showPrevEvent(); }}
+            className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
+            aria-label="Previous image"
+          >
+            <span className="material-symbols-outlined">chevron_left</span>
+          </button>
+
+          <div
+            className="max-w-4xl w-full flex flex-col items-center gap-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              className="max-h-[75vh] w-auto max-w-full object-contain rounded-lg shadow-2xl"
+              src={companyEvents[selectedEventIndex].image}
+              alt={companyEvents[selectedEventIndex].title}
+            />
+            <div className="text-center">
+              <p className="font-subhead-lg text-subhead-lg text-white">{companyEvents[selectedEventIndex].title}</p>
+              <p className="font-body-sm text-body-sm text-white/70">{companyEvents[selectedEventIndex].date} &middot; {selectedEventIndex + 1} / {companyEvents.length}</p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); showNextEvent(); }}
+            className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
+            aria-label="Next image"
+          >
+            <span className="material-symbols-outlined">chevron_right</span>
+          </button>
+        </div>
+      )}
+
       <Footer />
     </div>
   );
