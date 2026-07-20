@@ -10,11 +10,11 @@ export default function Navbar({ onOpenModal }) {
 
 
 
-  const linkClass = (path) => 
-    `font-subhead-lg text-subhead-lg transition-colors duration-200 ${
+  const linkClass = (path) =>
+    `relative font-subhead-lg text-subhead-lg pb-1 transition-colors duration-200 after:content-[''] after:absolute after:left-0 after:-bottom-0.5 after:h-0.5 after:bg-primary after:transition-all after:duration-300 after:ease-out ${
       isActive(path)
-        ? 'text-primary border-b-2 border-primary pb-1'
-        : 'text-on-surface-variant hover:text-primary'
+        ? 'text-primary after:w-full'
+        : 'text-on-surface-variant hover:text-primary after:w-0 hover:after:w-full'
     }`;
 
   const mobileLinkClass = (path) => 
@@ -76,15 +76,15 @@ export default function Navbar({ onOpenModal }) {
           >
             Properties
           </Link>
-          <Link 
-            className={mobileLinkClass('/about')} 
+          <Link
+            className={mobileLinkClass('/about')}
             to="/about"
             onClick={() => setMobileMenuOpen(false)}
           >
             About Us
           </Link>
-          <Link 
-            className={mobileLinkClass('/contact')} 
+          <Link
+            className={mobileLinkClass('/contact')}
             to="/contact"
             onClick={() => setMobileMenuOpen(false)}
           >

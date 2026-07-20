@@ -1,8 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { getContactContent } from '../data/contactContentManager';
+import { contactContentData } from '../data/contactContentData';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 export default function ContactPage() {
+  const [content, setContent] = useState(contactContentData);
+
+  useScrollReveal([content]);
+
+  useEffect(() => {
+    getContactContent()
+      .then(setContent)
+      .catch((e) => console.error("Failed to load contact page content:", e));
+  }, []);
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -41,24 +54,7 @@ export default function ContactPage() {
     setActiveFaq(activeFaq === index ? null : index);
   };
 
-  const faqItems = [
-    {
-      q: "Paano makakabili ng proyekto ng Bright Hermosa Realty Inc.?",
-      a: "Upang makabili ng proyekto ng Bright Hermosa Realty Inc., makipag-ugnayan sa aming property specialist sa pamamagitan ng aming website o tawagan kami para sa detalyadong impormasyon at tulong sa proseso ng pagbili."
-    },
-    {
-      q: "Paano ang kalidad ng mga proyekto ng Bright Hermosa Realty Inc.?",
-      a: "Ang kalidad ng mga proyekto ng Bright Hermosa Realty Inc. ay mataas, na may pangako sa world-class amenities at maingat na disenyo sa mga leisure lifestyle communities, na nagbibigay ng komportable at marangyang karanasan sa mga residente."
-    },
-    {
-      q: "Anong mga proyekto ang pinaka-popular?",
-      a: "Ang aming pinaka-popular na mga proyekto ay ang EastWest Breeze Leisure Farm & Resort at ang Mountain View Leisure Community."
-    },
-    {
-      q: "May mga outlet ba ang Bright Hermosa Realty Inc. sa malls?",
-      a: "Walang mga outlet ang Bright Hermosa Realty Inc. sa malls. Ang kumpanya ay nakatuon sa pagbuo ng mga leisure lifestyle communities at nag-aalok ng mga property investment opportunities sa mga magagandang lokasyon."
-    }
-  ];
+  const faqItems = content.faq.items;
 
   return (
     <div className="min-h-screen bg-surface text-on-surface font-body-md antialiased flex flex-col">
@@ -66,13 +62,29 @@ export default function ContactPage() {
 
       <main className="w-full flex-grow">
         {/* Hero Section */}
-        <section className="w-full bg-[#E8F5F0] py-section-gap relative overflow-hidden">
+        <section className="w-full py-section-gap relative overflow-hidden">
+          {/* Background image with readability overlay */}
+          <img
+            className="absolute inset-0 w-full h-full object-cover"
+            src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80"
+            alt=""
+            aria-hidden="true"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#E8F5F0]/95 via-[#E8F5F0]/85 to-[#E8F5F0]/50"></div>
           <div className="max-w-7xl mx-auto px-margin-page relative z-10">
-            <div className="max-w-3xl">
-              <h1 className="font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-stack-md leading-tight">Get in Touch</h1>
-              <p className="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
-                Experience seamless communication at Bright Hermosa Realty Inc., where clear channels promote collaboration and understanding. Connect effortlessly with our team, ensuring your needs are heard and met every step of the way.
-              </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-stack-lg items-center">
+
+              <div data-reveal className="space-y-stack-md">
+                <span className="font-label-caps text-label-caps text-secondary uppercase tracking-widest block">
+                  Contact Us
+                </span>
+                <h1 className="font-display-lg text-display-lg-mobile md:text-display-lg text-primary leading-tight">
+                  {content.hero.title}
+                </h1>
+                <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl leading-relaxed">
+                  {content.hero.text}
+                </p>
+              </div>
             </div>
           </div>
           {/* Decorative Elements */}
@@ -86,49 +98,53 @@ export default function ContactPage() {
             {/* Contact Info Cards */}
             <div className="lg:col-span-4 flex flex-col gap-gutter">
               {/* Address */}
-              <div className="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/50 shadow-sm hover:shadow-md transition-shadow">
+              <div data-reveal="left" className="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/50 shadow-sm hover:shadow-md transition-shadow">
                 <div className="w-12 h-12 bg-[#E8F5F0] rounded-full flex items-center justify-center mb-stack-md">
                   <span className="material-symbols-outlined text-primary text-2xl">location_on</span>
                 </div>
-                <h3 className="font-subhead-lg text-subhead-lg text-primary mb-stack-sm">Head Office</h3>
-                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
-                  VHermosa Bright Corp.<br />
-                  Brgy. Daine 1,<br />
-                  Indang Cavite, Philippines 4122
+                <h3 className="font-subhead-lg text-subhead-lg text-primary mb-stack-sm">{content.headOffice.title}</h3>
+                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed whitespace-pre-line">
+                  {content.headOffice.address}
                 </p>
               </div>
 
               {/* Direct Line */}
-              <div className="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/50 shadow-sm hover:shadow-md transition-shadow">
+              <div data-reveal="left" style={{ '--reveal-delay': '120ms' }} className="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/50 shadow-sm hover:shadow-md transition-shadow">
                 <div className="w-12 h-12 bg-[#E8F5F0] rounded-full flex items-center justify-center mb-stack-md">
                   <span className="material-symbols-outlined text-primary text-2xl">phone_in_talk</span>
                 </div>
-                <h3 className="font-subhead-lg text-subhead-lg text-primary mb-stack-sm">Direct Line</h3>
-                <a className="font-headline-md text-headline-md text-primary hover:text-primary-container transition-colors font-bold block mt-1" href="tel:09171626920">
-                  0917 1626 920
+                <h3 className="font-subhead-lg text-subhead-lg text-primary mb-stack-sm">{content.directLine.title}</h3>
+                <a className="font-headline-md text-headline-md text-primary hover:text-primary-container transition-colors font-bold block mt-1" href={`tel:${content.directLine.phone.replace(/\s+/g, '')}`}>
+                  {content.directLine.phone}
                 </a>
-                <p className="font-body-sm text-body-sm text-on-surface-variant mt-2">Available Mon-Fri, 9AM to 6PM</p>
+                <p className="font-body-sm text-body-sm text-on-surface-variant mt-2">{content.directLine.note}</p>
               </div>
 
               {/* Socials */}
-              <div className="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/50 shadow-sm hover:shadow-md transition-shadow">
+              <div data-reveal="left" style={{ '--reveal-delay': '240ms' }} className="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/50 shadow-sm hover:shadow-md transition-shadow">
                 <h3 className="font-subhead-lg text-subhead-lg text-primary mb-stack-md">Connect With Us</h3>
                 <div className="flex gap-4">
-                  <a className="w-10 h-10 bg-surface-container-highest rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-on-primary transition-colors duration-200" href="https://www.facebook.com/vhermosabrightcorp" target="_blank" rel="noopener noreferrer">
-                    <span className="material-symbols-outlined text-xl">public</span>
+                  <a className="w-10 h-10 bg-surface-container-highest rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-on-primary transition-colors duration-200" href="https://www.facebook.com/vhermosabrightcorp" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 1.913-.287 1.754h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 6.15 4.62 11.223 10.577 11.949Z" />
+                    </svg>
                   </a>
-                  <a className="w-10 h-10 bg-surface-container-highest rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-on-primary transition-colors duration-200" href="https://www.instagram.com/investmentproperties.vhbc/" target="_blank" rel="noopener noreferrer">
-                    <span className="material-symbols-outlined text-xl">photo_camera</span>
+                  <a className="w-10 h-10 bg-surface-container-highest rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-on-primary transition-colors duration-200" href="https://www.instagram.com/investmentproperties.vhbc/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                    </svg>
                   </a>
-                  <a className="w-10 h-10 bg-surface-container-highest rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-on-primary transition-colors duration-200" href="https://www.linkedin.com/company/vhermosa-bright-corp/" target="_blank" rel="noopener noreferrer">
-                    <span className="material-symbols-outlined text-xl">work</span>
+                  <a className="w-10 h-10 bg-surface-container-highest rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-on-primary transition-colors duration-200" href="https://www.linkedin.com/company/vhermosa-bright-corp/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.446-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z" />
+                    </svg>
                   </a>
                 </div>
               </div>
             </div>
 
             {/* Inquiry Form */}
-            <div className="lg:col-span-8 bg-surface-container-lowest p-8 md:p-12 rounded-xl border border-outline-variant/50 shadow-sm">
+            <div data-reveal="right" className="lg:col-span-8 bg-surface-container-lowest p-8 md:p-12 rounded-xl border border-outline-variant/50 shadow-sm">
               {submitted ? (
                 <div className="text-center py-20 animate-fadeIn">
                   <span className="material-symbols-outlined text-7xl text-primary animate-bounce fill-icon">
@@ -141,8 +157,8 @@ export default function ContactPage() {
                 </div>
               ) : (
                 <div className="animate-fadeIn">
-                  <h2 className="font-headline-md text-headline-md text-primary mb-stack-sm">Send an Inquiry</h2>
-                  <p className="font-body-md text-body-md text-on-surface-variant mb-stack-lg">Fill out the form below and our property specialists will get back to you shortly.</p>
+                  <h2 className="font-headline-md text-headline-md text-primary mb-stack-sm">{content.form.title}</h2>
+                  <p className="font-body-md text-body-md text-on-surface-variant mb-stack-lg">{content.form.subtitle}</p>
 
                   <form onSubmit={handleSubmit} className="space-y-stack-md">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
@@ -230,7 +246,7 @@ export default function ContactPage() {
                     <div className="pt-stack-sm">
                       <p className="font-body-sm text-body-sm text-on-surface-variant mb-stack-md">By submitting you agree to our <a className="text-primary underline hover:opacity-85" href="#">privacy policy</a>.</p>
                       <button
-                        className="w-full md:w-auto bg-primary-container text-on-primary-container font-subhead-lg text-subhead-lg px-8 py-4 rounded-lg hover:bg-primary hover:text-on-primary transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                        className="w-full md:w-auto bg-primary-container text-white font-subhead-lg text-subhead-lg px-8 py-4 rounded-lg hover:bg-primary hover:text-on-primary transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
                         type="submit"
                       >
                         Send Message
@@ -246,27 +262,31 @@ export default function ContactPage() {
         </section>
 
         {/* Map Section */}
-        <section className="w-full h-96 relative overflow-hidden border-t border-b border-outline-variant/30">
-          <img
-            className="w-full h-full object-cover"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD89WliQNDaN6m_sM4bm6yksYZBeQ_c0gcCucxuRPPu1hHpXrlI4KRMgPQG-R9jdxoxRxyph1rqjLKkLdKHFXl4oOA1v14Kkp9anOUkAgIkmVSS2wanLeJDbjfjkCtBN_iS0a0wCb8d-oU8Id-Tvw2Z6kaqCyz_VvXfyKafX8QtDcouEXEDuz4ziLBQVh-5eJxt_VkGG8hAmqb6yzbx6FEhunmef-Ew4Zy9Be3x6YOVqOK7cs3UmwfUqasGWot3aDcGltIDztPENdE"
-            alt="Map location of Indang, Cavite, Philippines"
-          />
-          <div className="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
+        <section data-reveal className="w-full h-96 relative overflow-hidden border-t border-b border-outline-variant/30">
+          <iframe
+            src={content.map.embedUrl}
+            className="w-full h-full border-0"
+            allowFullScreen=""
+            loading="lazy"
+            referrerPolicy="strict-origin-when-cross-origin"
+            title="VHBC Office location map"
+          ></iframe>
         </section>
 
         {/* FAQ Section */}
         <section className="max-w-7xl mx-auto px-margin-page py-section-gap">
-          <div className="text-center max-w-3xl mx-auto mb-stack-lg">
-            <span className="font-label-caps text-label-caps text-primary uppercase tracking-wider mb-2 block">Knowledge Base</span>
-            <h2 className="font-headline-md text-headline-md text-primary mb-stack-sm">Frequently Asked Questions</h2>
-            <p className="font-body-md text-body-md text-on-surface-variant">Clear information and responsible guidance for our prospective residents.</p>
+          <div data-reveal className="text-center max-w-3xl mx-auto mb-stack-lg">
+            <span className="font-label-caps text-label-caps text-primary uppercase tracking-wider mb-2 block">{content.faq.label}</span>
+            <h2 className="font-headline-md text-headline-md text-primary mb-stack-sm">{content.faq.title}</h2>
+            <p className="font-body-md text-body-md text-on-surface-variant">{content.faq.subtitle}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter max-w-5xl mx-auto">
             {faqItems.map((item, idx) => (
               <div
                 key={idx}
+                data-reveal
+                style={{ '--reveal-delay': `${(idx % 2) * 120}ms` }}
                 className="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/30 hover:border-primary/30 transition-all duration-300 cursor-pointer flex flex-col"
                 onClick={() => toggleFaq(idx)}
               >

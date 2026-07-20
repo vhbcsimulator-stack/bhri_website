@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { getAllProperties } from '../data/propertiesManager';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 export default function PropertiesPage() {
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -11,6 +12,8 @@ export default function PropertiesPage() {
   const [properties, setProperties] = useState([]);
   const [filteredProperties, setFilteredProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useScrollReveal([filteredProperties, loading]);
 
   useEffect(() => {
     async function load() {
@@ -47,7 +50,7 @@ export default function PropertiesPage() {
 
       {/* Page Header */}
       <header className="py-section-gap px-margin-page bg-surface-container-low">
-        <div className="max-w-7xl mx-auto text-center">
+        <div data-reveal className="max-w-7xl mx-auto text-center">
           <h1 className="font-display-lg text-display-lg text-primary mb-stack-md hidden md:block">
             Our Leisure Communities
           </h1>
@@ -64,7 +67,7 @@ export default function PropertiesPage() {
       <main className="max-w-7xl mx-auto px-margin-page py-section-gap flex-grow w-full">
         {/* Filter Section */}
         <section className="mb-section-gap">
-          <div className="bg-surface border border-outline-variant rounded-xl p-6 flex flex-col md:flex-row gap-gutter items-end shadow-sm">
+          <div data-reveal className="bg-surface border border-outline-variant rounded-xl p-6 flex flex-col md:flex-row gap-gutter items-end shadow-sm">
             <div className="w-full md:w-1/3">
               <label className="block font-subhead-sm text-subhead-sm text-on-surface-variant mb-2">Location</label>
               <select 
@@ -111,8 +114,9 @@ export default function PropertiesPage() {
             </>
           ) : filteredProperties.length > 0 ? (
             filteredProperties.map((property) => (
-              <article 
-                key={property.id} 
+              <article
+                key={property.id}
+                data-reveal
                 className="bg-surface rounded-xl overflow-hidden border border-outline-variant group hover:shadow-lg transition-shadow duration-300 flex flex-col"
               >
                 <div className="relative h-72 w-full overflow-hidden bg-surface-container-low">
@@ -164,7 +168,7 @@ export default function PropertiesPage() {
 
         {/* Info Bento Grid */}
         <section className="mt-section-gap grid grid-cols-1 md:grid-cols-3 gap-gutter">
-          <div className="bg-surface-container-low rounded-xl p-8 col-span-1 md:col-span-2 flex flex-col justify-center relative overflow-hidden">
+          <div data-reveal="left" className="bg-surface-container-low rounded-xl p-8 col-span-1 md:col-span-2 flex flex-col justify-center relative overflow-hidden">
             <div className="z-10 relative">
               <h3 className="font-headline-md text-headline-md text-primary mb-4">A Vision of Sustainability</h3>
               <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
@@ -176,7 +180,7 @@ export default function PropertiesPage() {
             </span>
           </div>
           
-          <div className="bg-primary-container text-on-primary-container rounded-xl p-8 flex flex-col justify-center items-start">
+          <div data-reveal="right" className="bg-primary-container text-on-primary-container rounded-xl p-8 flex flex-col justify-center items-start">
             <span className="material-symbols-outlined text-[40px] mb-4">support_agent</span>
             <h3 className="font-headline-md text-headline-md text-on-primary mb-2">Ready to Invest?</h3>
             <p className="font-body-md text-body-md text-on-primary-container mb-6 opacity-90">

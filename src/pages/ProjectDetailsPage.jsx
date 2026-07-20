@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 import { getPropertyById } from '../data/propertiesManager';
+import useScrollReveal from '../hooks/useScrollReveal';
 
 export default function ProjectDetailsPage() {
   const { projectId } = useParams();
@@ -11,6 +12,8 @@ export default function ProjectDetailsPage() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+
+  useScrollReveal([property, loading]);
 
   useEffect(() => {
     async function load() {
@@ -162,7 +165,7 @@ export default function ProjectDetailsPage() {
           </div>
           
           <div className="relative z-10 px-margin-page max-w-7xl mx-auto w-full text-white">
-            <div className="max-w-3xl">
+            <div data-reveal className="max-w-3xl">
               <span className="inline-block mb-4 px-4 py-1 rounded-full bg-secondary-container/20 border border-secondary-container/40 font-subhead-sm text-secondary-container uppercase tracking-widest">
                 {property.intro.tag}
               </span>
@@ -194,7 +197,7 @@ export default function ProjectDetailsPage() {
         {/* Overview Section */}
         <section id="overview" className="py-section-gap px-margin-page bg-surface-container-lowest scroll-mt-24">
           <div className="max-w-7xl mx-auto grid md:grid-cols-12 gap-12 items-center">
-            <div className="md:col-span-7 space-y-6">
+            <div data-reveal="left" className="md:col-span-7 space-y-6">
               <h2 className="font-headline-md text-headline-md text-primary">
                 {property.intro.title}
               </h2>
@@ -220,7 +223,7 @@ export default function ProjectDetailsPage() {
               </div>
             </div>
             
-            <div className="md:col-span-5 relative group mt-8 md:mt-0">
+            <div data-reveal="right" className="md:col-span-5 relative group mt-8 md:mt-0">
               <div className="absolute -inset-4 bg-primary-fixed-dim/20 rounded-2xl -z-10 transition-all group-hover:scale-105"></div>
               <img 
                 className="rounded-xl shadow-2xl w-full aspect-[4/3] object-cover relative z-10" 
@@ -233,7 +236,7 @@ export default function ProjectDetailsPage() {
 
         {/* Facilities Section */}
         <section id="facilities" className="py-section-gap px-margin-page bg-surface scroll-mt-24">
-          <div className="max-w-3xl mx-auto mb-12 text-center">
+          <div data-reveal className="max-w-3xl mx-auto mb-12 text-center">
             <h2 className="font-headline-md text-headline-md text-primary mb-4">
               {property.facilities.title}
             </h2>
@@ -245,7 +248,7 @@ export default function ProjectDetailsPage() {
           {/* Conditional Layout Rendering */}
           {property.facilities.style === 'bento-ewb' ? (
             /* East West Breeze Bento Layout */
-            <div className="max-w-7xl mx-auto grid grid-rows-2 grid-flow-col auto-cols-[250px] md:auto-cols-[290px] gap-4 h-[450px] md:h-[600px] overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+            <div data-reveal className="max-w-7xl mx-auto grid grid-rows-2 grid-flow-col auto-cols-[250px] md:auto-cols-[290px] gap-4 h-[450px] md:h-[600px] overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
               {property.facilities.items.map((facility, index) => {
                 const classes = index === 0 
                   ? 'row-span-2 col-span-2' 
@@ -270,7 +273,7 @@ export default function ProjectDetailsPage() {
             </div>
           ) : (
             /* Mountain View Bento Layout */
-            <div className="max-w-7xl mx-auto grid grid-rows-2 grid-flow-col auto-cols-[250px] md:auto-cols-[290px] gap-4 h-[450px] md:h-[600px] overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+            <div data-reveal className="max-w-7xl mx-auto grid grid-rows-2 grid-flow-col auto-cols-[250px] md:auto-cols-[290px] gap-4 h-[450px] md:h-[600px] overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
               {property.facilities.items.map((facility, index) => {
                 let classes = 'row-span-1 col-span-1';
                 if (index === 0) classes = 'row-span-2 col-span-2';
@@ -298,7 +301,7 @@ export default function ProjectDetailsPage() {
 
         {/* Project Developments Section */}
         <section id="developments" className="py-section-gap px-margin-page bg-surface-container-low scroll-mt-24">
-          <div className="max-w-7xl mx-auto text-center mb-16">
+          <div data-reveal className="max-w-7xl mx-auto text-center mb-16">
             <h2 className="font-headline-md text-headline-md text-primary mb-4">
               {property.developments?.title || "Project Developments"}
             </h2>
@@ -309,7 +312,7 @@ export default function ProjectDetailsPage() {
           
           {property.developments?.style === 'bento-mv' ? (
             /* Mountain View Bento Developments Layout */
-            <div className="max-w-7xl mx-auto grid grid-rows-2 grid-flow-col auto-cols-[250px] md:auto-cols-[290px] gap-4 h-[450px] md:h-[600px] overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+            <div data-reveal className="max-w-7xl mx-auto grid grid-rows-2 grid-flow-col auto-cols-[250px] md:auto-cols-[290px] gap-4 h-[450px] md:h-[600px] overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
               {(property.developments.items || []).map((dev, index) => {
                 let classes = 'row-span-1 col-span-1';
                 if (index === 0) classes = 'row-span-2 col-span-2';
@@ -334,7 +337,7 @@ export default function ProjectDetailsPage() {
             </div>
           ) : (
             /* EWB Bento Developments Layout */
-            <div className="max-w-7xl mx-auto grid grid-rows-2 grid-flow-col auto-cols-[250px] md:auto-cols-[290px] gap-4 h-[450px] md:h-[600px] overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
+            <div data-reveal className="max-w-7xl mx-auto grid grid-rows-2 grid-flow-col auto-cols-[250px] md:auto-cols-[290px] gap-4 h-[450px] md:h-[600px] overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
               {(property.developments?.items || []).map((dev, index) => {
                 const classes = index === 0 
                   ? 'row-span-2 col-span-2' 
@@ -365,11 +368,11 @@ export default function ProjectDetailsPage() {
           {property.investment.style === 'bento-ewb-inv' ? (
             /* East West Breeze Bento Investment */
             <div className="max-w-7xl mx-auto">
-              <h2 className="font-headline-md text-headline-md text-primary mb-12 text-center">
+              <h2 data-reveal className="font-headline-md text-headline-md text-primary mb-12 text-center">
                 {property.investment.title}
               </h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+
+              <div data-reveal className="grid grid-cols-1 md:grid-cols-12 gap-6">
                 {/* Large Item */}
                 <div className="col-span-12 md:col-span-8 bg-primary rounded-3xl p-8 md:p-12 text-on-primary relative overflow-hidden flex flex-col justify-between min-h-[350px]">
                   <div className="relative z-10">
@@ -430,7 +433,7 @@ export default function ProjectDetailsPage() {
           ) : (
             /* Mountain View Asymmetric List & Asymmetric Images Layout */
             <div className="max-w-7xl mx-auto grid md:grid-cols-12 gap-16 items-center">
-              <div className="md:col-span-6 space-y-8">
+              <div data-reveal="left" className="md:col-span-6 space-y-8">
                 <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">Investment</span>
                 <h2 className="font-headline-md text-headline-md text-primary leading-tight">
                   {property.investment.title}
@@ -468,7 +471,7 @@ export default function ProjectDetailsPage() {
               </div>
 
               {/* Asymmetric Grid of 4 Images */}
-              <div className="md:col-span-6 grid grid-cols-2 gap-4">
+              <div data-reveal="right" className="md:col-span-6 grid grid-cols-2 gap-4">
                 <div className="space-y-4">
                   <img 
                     className="rounded-xl w-full aspect-square object-cover shadow-xl hover:scale-[1.02] transition-transform duration-300" 
@@ -501,7 +504,7 @@ export default function ProjectDetailsPage() {
         {/* Lead Inquiry Submission Section */}
         <section id="inquire" className="py-section-gap px-margin-page bg-surface-container-lowest scroll-mt-24">
           <div className="max-w-7xl mx-auto">
-            <div className="bg-deep-emerald rounded-3xl overflow-hidden flex flex-col lg:flex-row shadow-2xl">
+            <div data-reveal="zoom" className="bg-deep-emerald rounded-3xl overflow-hidden flex flex-col lg:flex-row shadow-2xl">
               
               {/* Form Info Box */}
               <div className="lg:w-1/2 p-12 md:p-20 text-white flex flex-col justify-between">

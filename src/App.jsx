@@ -5,6 +5,8 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import PropertiesPage from './pages/PropertiesPage';
 import ProjectDetailsPage from './pages/ProjectDetailsPage';
+import CareerPage from './pages/CareerPage';
+import JobDetailsPage from './pages/JobDetailsPage';
 
 // UX Helper to handle scrolling behavior on route changes and hash navigation
 function ScrollToTop() {
@@ -39,6 +41,8 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/properties" element={<PropertiesPage />} />
         <Route path="/properties/:projectId" element={<ProjectDetailsPage />} />
+        <Route path="/careers" element={<CareerPage />} />
+        <Route path="/careers/:jobId" element={<JobDetailsPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
