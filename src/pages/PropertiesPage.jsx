@@ -1,47 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { getAllProperties } from '../data/propertiesManager';
 import useScrollReveal from '../hooks/useScrollReveal';
+import { useProperties } from '../hooks/useContentQueries';
 
 export default function PropertiesPage() {
   const [selectedLocation, setSelectedLocation] = useState('');
   const [selectedType, setSelectedType] = useState('');
-  
-  const [properties, setProperties] = useState([]);
-  const [filteredProperties, setFilteredProperties] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [appliedFilters, setAppliedFilters] = useState({ location: '', type: '' });
+
+  const { data: properties = [], isLoading: loading } = useProperties();
+
+  const filteredProperties = useMemo(() => {
+    let filtered = properties;
+
+    if (appliedFilters.location) {
+      filtered = filtered.filter(p => p.location.toLowerCase() === appliedFilters.location.toLowerCase());
+    }
+
+    if (appliedFilters.type) {
+      filtered = filtered.filter(p => p.type === appliedFilters.type);
+    }
+
+    return filtered;
+  }, [properties, appliedFilters]);
 
   useScrollReveal([filteredProperties, loading]);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const list = await getAllProperties();
-        setProperties(list);
-        setFilteredProperties(list);
-      } catch (e) {
-        console.error("Failed to load properties:", e);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
-
   const handleApplyFilters = () => {
-    let filtered = properties;
-    
-    if (selectedLocation) {
-      filtered = filtered.filter(p => p.location.toLowerCase() === selectedLocation.toLowerCase());
-    }
-    
-    if (selectedType) {
-      filtered = filtered.filter(p => p.type === selectedType);
-    }
-    
-    setFilteredProperties(filtered);
+    setAppliedFilters({ location: selectedLocation, type: selectedType });
   };
 
   return (
@@ -188,7 +176,7 @@ export default function PropertiesPage() {
             </p>
             <Link 
               to="/contact" 
-              className="bg-on-primary text-primary px-6 py-2.5 rounded-lg font-subhead-lg text-subhead-lg hover:bg-surface transition-colors duration-200"
+              className="bg-on-primary text-primary px-6 py-2.5 rounded-lg font-subhead-lg text-subhead-lg hover:bg-primary hover:text-on-primary transition-colors duration-200"
             >
               Contact Us
             </Link>

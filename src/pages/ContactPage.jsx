@@ -1,20 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { getContactContent } from '../data/contactContentManager';
 import { contactContentData } from '../data/contactContentData';
 import useScrollReveal from '../hooks/useScrollReveal';
+import { useContactContent } from '../hooks/useContentQueries';
 
 export default function ContactPage() {
-  const [content, setContent] = useState(contactContentData);
+  const { data: content = contactContentData } = useContactContent();
 
   useScrollReveal([content]);
-
-  useEffect(() => {
-    getContactContent()
-      .then(setContent)
-      .catch((e) => console.error("Failed to load contact page content:", e));
-  }, []);
 
   const [formData, setFormData] = useState({
     firstName: '',

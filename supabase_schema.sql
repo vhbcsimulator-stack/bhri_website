@@ -43,6 +43,15 @@ comment on table public.properties is 'Stores all luxury community and farm reso
 -- ============================================================================
 alter table public.properties enable row level security;
 
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+set search_path = ''
+as $$
+  select coalesce(auth.jwt() -> 'app_metadata' ->> 'role', '') = 'admin';
+$$;
+
 -- Policy A: Allow anyone (public and anonymous) to view properties
 create policy "Allow public read access" on public.properties
   for select
@@ -50,9 +59,9 @@ create policy "Allow public read access" on public.properties
 
 -- Policy B: Allow authenticated administrators to perform all database write operations
 create policy "Allow admin write access" on public.properties
-  for all
-  using (auth.role() = 'authenticated')
-  with check (auth.role() = 'authenticated');
+  for all to authenticated
+  using ((select public.is_admin()))
+  with check ((select public.is_admin()));
 
 -- ============================================================================
 -- 4. SUPABASE STORAGE BUCKET CONFIGURATION
@@ -81,67 +90,26 @@ create policy "Allow public read from bucket" on storage.objects
 -- Policy B: Allow authenticated users (Admin) to upload files
 create policy "Allow admin insert into bucket" on storage.objects
   for insert
-  with check (bucket_id = 'properties-media' and auth.role() = 'authenticated');
+  with check (bucket_id = 'properties-media' and (select public.is_admin()));
 
 -- Policy C: Allow authenticated users (Admin) to update files
 create policy "Allow admin update in bucket" on storage.objects
   for update
-  using (bucket_id = 'properties-media' and auth.role() = 'authenticated');
+  using (bucket_id = 'properties-media' and (select public.is_admin()));
 
 -- Policy D: Allow authenticated users (Admin) to delete files
 create policy "Allow admin delete in bucket" on storage.objects
   for delete
-  using (bucket_id = 'properties-media' and auth.role() = 'authenticated');
+  using (bucket_id = 'properties-media' and (select public.is_admin()));
 
 -- ============================================================================
--- 5. ADMIN USER CREATION SCRIPT
+-- 5. ADMIN USER SETUP
 -- ============================================================================
--- Inserts the admin user into Supabase's auth.users table
--- Username: admin | Email: admin@bhri.com | Password: BHRI@2026
--- Note: Uses bcrypt (BF) crypt encryption to safely seed the password hash.
-do $$
-begin
-  if not exists (select 1 from auth.users where email = 'admin@bhri.com') then
-    insert into auth.users (
-      instance_id,
-      id,
-      aud,
-      role,
-      email,
-      encrypted_password,
-      email_confirmed_at,
-      recovery_sent_at,
-      last_sign_in_at,
-      raw_app_meta_data,
-      raw_user_meta_data,
-      created_at,
-      updated_at,
-      confirmation_token,
-      email_change,
-      email_change_token_new,
-      recovery_token
-    ) 
-    values (
-      '00000000-0000-0000-0000-000000000000',
-      uuid_generate_v4(),
-      'authenticated',
-      'authenticated',
-      'admin@bhri.com', -- email address used to log into Supabase
-      crypt('BHRI@2026', gen_salt('bf', 10)), -- Hashes with bcrypt cost factor 10
-      now(),
-      null,
-      now(),
-      '{"provider":"email","providers":["email"]}',
-      '{"username":"admin"}', -- Username meta tag
-      now(),
-      now(),
-      '',
-      '',
-      '',
-      ''
-    );
-  end if;
-end $$;
+-- Create administrators through Supabase Auth, enable MFA, then grant the role
+-- from a trusted SQL session (never from browser code):
+-- update auth.users
+-- set raw_app_meta_data = raw_app_meta_data || '{"role":"admin"}'::jsonb
+-- where email = 'your-admin@example.com';
 
 -- ============================================================================
 -- 6. DATA PRE-POPULATION (INITIAL PROPERTY TEMPLATES)

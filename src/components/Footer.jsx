@@ -13,9 +13,9 @@ export default function Footer() {
               className="h-12 w-auto object-contain bg-transparent brightness-0 invert"
             />
           </div>
-          <p className="font-body-md text-on-primary-container mb-4">
-            VHermosa Bright Corp. Brgy. Daine 1, Indang Cavite, Philippines 4122
-          </p>
+          <a className="font-body-md text-on-primary-container mb-4" href="https://maps.app.goo.gl/hsYGGaiq8An28auLA">
+            VHBC Office, Royale Tagaytay Estates Alfonso Rd., Alfonso, Cavite
+          </a>
         </div>
         
         <div className="col-span-1">

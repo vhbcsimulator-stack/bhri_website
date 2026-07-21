@@ -1,40 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ApplyModal from '../components/ApplyModal';
-import { getCareerContent } from '../data/careerContentManager';
 import useScrollReveal from '../hooks/useScrollReveal';
+import { useCareerContent } from '../hooks/useContentQueries';
 
 export default function JobDetailsPage() {
   const { jobId } = useParams();
-  const [content, setContent] = useState(null);
-  const [notFound, setNotFound] = useState(false);
   const [applyOpen, setApplyOpen] = useState(false);
+  const { data: career, isLoading } = useCareerContent();
+  const role = career?.roles.items.find((r) => r.id === jobId);
 
-  useScrollReveal([content]);
+  useScrollReveal([career]);
 
-  useEffect(() => {
-    let cancelled = false;
-    getCareerContent()
-      .then((data) => {
-        if (cancelled) return;
-        const role = data.roles.items.find((r) => r.id === jobId);
-        if (!role) {
-          setNotFound(true);
-        } else {
-          setContent({ career: data, role });
-        }
-      })
-      .catch((e) => console.error("Failed to load job details:", e));
-    return () => { cancelled = true; };
-  }, [jobId]);
-
-  if (notFound) {
+  if (!isLoading && career && !role) {
     return <Navigate to="/careers" replace />;
   }
 
-  if (!content) {
+  if (!career || !role) {
     return (
       <div className="min-h-screen bg-surface flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -42,8 +26,7 @@ export default function JobDetailsPage() {
     );
   }
 
-  const { role } = content;
-  const otherRoles = content.career.roles.items.filter((r) => r.id !== role.id).slice(0, 3);
+  const otherRoles = career.roles.items.filter((r) => r.id !== role.id).slice(0, 3);
 
   return (
     <div className="min-h-screen bg-surface text-on-surface font-body-md antialiased flex flex-col">

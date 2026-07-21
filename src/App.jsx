@@ -7,6 +7,10 @@ import PropertiesPage from './pages/PropertiesPage';
 import ProjectDetailsPage from './pages/ProjectDetailsPage';
 import CareerPage from './pages/CareerPage';
 import JobDetailsPage from './pages/JobDetailsPage';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
+import CookiesPage from './pages/CookiesPage';
+import SitemapPage from './pages/SitemapPage';
 
 // UX Helper to handle scrolling behavior on route changes and hash navigation
 function ScrollToTop() {
@@ -43,6 +47,10 @@ function App() {
         <Route path="/properties/:projectId" element={<ProjectDetailsPage />} />
         <Route path="/careers" element={<CareerPage />} />
         <Route path="/careers/:jobId" element={<JobDetailsPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/cookies" element={<CookiesPage />} />
+        <Route path="/sitemap" element={<SitemapPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

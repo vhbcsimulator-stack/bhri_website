@@ -1,21 +1,15 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { getCareerContent } from '../data/careerContentManager';
 import { careerContentData } from '../data/careerContentData';
 import useScrollReveal from '../hooks/useScrollReveal';
+import { useCareerContent } from '../hooks/useContentQueries';
 
 export default function CareerPage() {
-  const [content, setContent] = useState(careerContentData);
+  const { data: content = careerContentData } = useCareerContent();
 
   useScrollReveal([content]);
-
-  useEffect(() => {
-    getCareerContent()
-      .then(setContent)
-      .catch((e) => console.error("Failed to load career page content:", e));
-  }, []);
 
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');

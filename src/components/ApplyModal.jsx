@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
+import { submitApplication } from '../data/applicantsManager';
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 3 * 1024 * 1024; // 3MB
 const ACCEPTED_TYPES = '.pdf,.doc,.docx';
+const ACCEPTED_MIME_TYPES = new Set([
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+]);
 
-// UI-only application modal. Collects resume (required) + cover letter
-// (optional) and simulates a submission — no upload/email wiring yet.
+// Collects resume (required) and submits the
+// application (files + record) to Supabase.
 export default function ApplyModal({ role, onClose }) {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [resumeFile, setResumeFile] = useState(null);
-  const [coverLetterFile, setCoverLetterFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
@@ -23,15 +28,22 @@ export default function ApplyModal({ role, onClose }) {
       return;
     }
     if (file.size > MAX_FILE_SIZE) {
-      setError(`"${file.name}" is too large. Files must be under 5MB.`);
+      setError(`"${file.name}" is too large. Files must be under 3MB.`);
       e.target.value = '';
+      return;
+    }
+    const extension = file.name.split('.').pop()?.toLowerCase();
+    if (!ACCEPTED_MIME_TYPES.has(file.type) || !['pdf', 'doc', 'docx'].includes(extension)) {
+      setError('Only PDF, DOC, and DOCX files are accepted.');
+      e.target.value = '';
+      setter(null);
       return;
     }
     setError('');
     setter(file);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!resumeFile) {
       setError('Please attach your resume.');
@@ -39,11 +51,15 @@ export default function ApplyModal({ role, onClose }) {
     }
     setError('');
     setSubmitting(true);
-    // Placeholder submit — no backend/email wiring yet.
-    setTimeout(() => {
-      setSubmitting(false);
+    try {
+      await submitApplication({ role, fullName, email, phone, message, resumeFile });
       setSubmitted(true);
-    }, 600);
+    } catch (err) {
+      console.error('Failed to submit application:', err);
+      setError('Something went wrong submitting your application. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -93,6 +109,7 @@ export default function ApplyModal({ role, onClose }) {
                     id="apply-name"
                     type="text"
                     required
+                    maxLength="150"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md"
@@ -105,6 +122,7 @@ export default function ApplyModal({ role, onClose }) {
                     id="apply-phone"
                     type="tel"
                     value={phone}
+                    maxLength="40"
                     onChange={(e) => setPhone(e.target.value)}
                     className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md"
                     placeholder="09XX XXX XXXX"
@@ -118,6 +136,7 @@ export default function ApplyModal({ role, onClose }) {
                   id="apply-email"
                   type="email"
                   required
+                  maxLength="320"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md"
@@ -135,19 +154,7 @@ export default function ApplyModal({ role, onClose }) {
                   onChange={handleFileChange(setResumeFile)}
                   className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-2.5 font-body-sm text-body-sm text-on-surface-variant file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-primary file:text-on-primary file:cursor-pointer cursor-pointer"
                 />
-                <p className="text-[10px] text-outline mt-1">PDF or Word document, up to 5MB.</p>
-              </div>
-
-              <div>
-                <label className="block font-subhead-sm text-subhead-sm text-on-surface mb-1.5" htmlFor="apply-cover-letter">Cover Letter (optional)</label>
-                <input
-                  id="apply-cover-letter"
-                  type="file"
-                  accept={ACCEPTED_TYPES}
-                  onChange={handleFileChange(setCoverLetterFile)}
-                  className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-2.5 font-body-sm text-body-sm text-on-surface-variant file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:bg-surface-container-high file:text-primary file:cursor-pointer cursor-pointer"
-                />
-                <p className="text-[10px] text-outline mt-1">PDF or Word document, up to 5MB.</p>
+                <p className="text-[10px] text-outline mt-1">PDF or Word document, up to 3MB.</p>
               </div>
 
               <div>
@@ -155,6 +162,7 @@ export default function ApplyModal({ role, onClose }) {
                 <textarea
                   id="apply-message"
                   rows="3"
+                  maxLength="3000"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md resize-none"

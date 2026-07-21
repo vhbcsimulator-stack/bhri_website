@@ -77,14 +77,16 @@ export const aboutContentData = {
         imageKey: 'salesOfficeRTE',
         name: 'Sales Office - Royale Tagaytay Estates',
         address: 'Royale Tagaytay Estates Alfonso Rd., Alfonso, Cavite',
-        contact: '+63 917 162 6920'
+        contact: '+63 917 162 6920',
+        mapUrl: 'https://www.google.com/maps/search/?api=1&query=Royale+Tagaytay+Estates+Alfonso+Rd.%2C+Alfonso%2C+Cavite'
       },
       {
         image: '',
         imageKey: 'salesOfficeMVLC',
         name: 'Sales Office - Mountain View Leisure Community',
         address: 'Mountain View Leisure Community Munting lndang, Nasugbu, Batangas',
-        contact: '+63 995 673 1952'
+        contact: '+63 995 673 1952',
+        mapUrl: 'https://www.google.com/maps/search/?api=1&query=Mountain+View+Leisure+Community+Munting+lndang%2C+Nasugbu%2C+Batangas'
       }
     ]
   },

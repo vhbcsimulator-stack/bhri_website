@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { getAllProperties } from '../data/propertiesManager';
-import { getHomeContent } from '../data/homeContentManager';
 import { homeContentData } from '../data/homeContentData';
 import { resolveImage } from '../data/staticImages';
 import useScrollReveal from '../hooks/useScrollReveal';
+import { useHomeContent, useProperties } from '../hooks/useContentQueries';
 
 
 export default function HomePage() {
@@ -14,29 +13,10 @@ export default function HomePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
-  const [properties, setProperties] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [content, setContent] = useState(homeContentData);
+  const { data: properties = [], isLoading: loading } = useProperties();
+  const { data: content = homeContentData } = useHomeContent();
 
   useScrollReveal([content, properties, loading]);
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const data = await getAllProperties();
-        setProperties(data);
-      } catch (e) {
-        console.error("Failed to load properties:", e);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-    
-    getHomeContent()
-      .then(setContent)
-      .catch((e) => console.error("Failed to load home page content:", e));
-  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

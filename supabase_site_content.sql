@@ -18,23 +18,41 @@ create table if not exists public.site_content (
 -- 2. Row Level Security
 alter table public.site_content enable row level security;
 
+-- Admin authorization is stored in protected Auth app_metadata. Set it only
+-- from the Supabase Dashboard or another trusted server-side environment:
+--   update auth.users
+--   set raw_app_meta_data = raw_app_meta_data || '{"role":"admin"}'::jsonb
+--   where email = 'your-admin@example.com';
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+set search_path = ''
+as $$
+  select coalesce(auth.jwt() -> 'app_metadata' ->> 'role', '') = 'admin';
+$$;
+
 drop policy if exists "Public read site content" on public.site_content;
 drop policy if exists "Public insert site content" on public.site_content;
 drop policy if exists "Public update site content" on public.site_content;
+drop policy if exists "Admin insert site content" on public.site_content;
+drop policy if exists "Admin update site content" on public.site_content;
+drop policy if exists "Admin delete site content" on public.site_content;
 
 -- Anyone can read (the public website needs this).
 create policy "Public read site content" on public.site_content
   for select using (true);
 
--- NOTE: these write policies allow anonymous writes so the admin
--- app's offline/demo login keeps working. To lock writes down to
--- real Supabase accounts, replace "true" in the two policies below
--- with: (auth.role() = 'authenticated')
-create policy "Public insert site content" on public.site_content
-  for insert with check (true);
+create policy "Admin insert site content" on public.site_content
+  for insert to authenticated with check ((select public.is_admin()));
 
-create policy "Public update site content" on public.site_content
-  for update using (true) with check (true);
+create policy "Admin update site content" on public.site_content
+  for update to authenticated
+  using ((select public.is_admin()))
+  with check ((select public.is_admin()));
+
+create policy "Admin delete site content" on public.site_content
+  for delete to authenticated using ((select public.is_admin()));
 
 -- 3. Seed with the current website content
 insert into public.site_content (id, content)

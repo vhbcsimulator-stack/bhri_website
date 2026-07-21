@@ -5,8 +5,8 @@ import { useEffect } from 'react';
 // renders so newly-added elements get observed too.
 export default function useScrollReveal(deps = []) {
   useEffect(() => {
-    const elements = document.querySelectorAll('[data-reveal]:not(.is-revealed)');
-    if (elements.length === 0) return;
+    const revealSelector = '[data-reveal]:not(.is-revealed)';
+    const elements = document.querySelectorAll(revealSelector);
 
     if (typeof IntersectionObserver === 'undefined') {
       elements.forEach((el) => el.classList.add('is-revealed'));
@@ -26,7 +26,27 @@ export default function useScrollReveal(deps = []) {
     );
 
     elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
+
+    // Some reveal elements (for example, gallery photos behind "View More")
+    // are mounted after this effect runs. Register those nodes as they are
+    // inserted so they do not remain permanently transparent.
+    const mutationObserver = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (!(node instanceof Element)) return;
+
+          if (node.matches(revealSelector)) observer.observe(node);
+          node.querySelectorAll(revealSelector).forEach((el) => observer.observe(el));
+        });
+      });
+    });
+
+    mutationObserver.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      mutationObserver.disconnect();
+      observer.disconnect();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 }

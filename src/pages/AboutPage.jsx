@@ -1,24 +1,20 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { getAboutContent } from '../data/aboutContentManager';
 import { aboutContentData } from '../data/aboutContentData';
 import { resolveImage } from '../data/staticImages';
 import useScrollReveal from '../hooks/useScrollReveal';
+import { useAboutContent } from '../hooks/useContentQueries';
 
 export default function AboutPage() {
   const navigate = useNavigate();
-  const [content, setContent] = useState(aboutContentData);
+  const { data: content = aboutContentData } = useAboutContent();
   const [activeDept, setActiveDept] = useState(1);
+  const deptDragStartX = useRef(null);
+  const deptDragMoved = useRef(false);
 
   useScrollReveal([content]);
-
-  useEffect(() => {
-    getAboutContent()
-      .then(setContent)
-      .catch((e) => console.error("Failed to load about page content:", e));
-  }, []);
 
   const coreValues = content.coreValues.items;
   const boardOfDirectors = content.board.members;
@@ -26,6 +22,30 @@ export default function AboutPage() {
   const companyEvents = content.events.items;
   const reasonsToChoose = content.whyChooseUs.reasons;
   const departments = content.departments?.items || aboutContentData.departments.items;
+
+  const handleDeptDragStart = (clientX) => {
+    deptDragStartX.current = clientX;
+    deptDragMoved.current = false;
+  };
+
+  const handleDeptDragMove = (clientX) => {
+    if (deptDragStartX.current === null) return;
+    if (Math.abs(clientX - deptDragStartX.current) > 10) {
+      deptDragMoved.current = true;
+    }
+  };
+
+  const handleDeptDragEnd = (clientX) => {
+    if (deptDragStartX.current === null) return;
+    const delta = clientX - deptDragStartX.current;
+    const swipeThreshold = 50;
+    if (delta > swipeThreshold) {
+      setActiveDept((current) => Math.max(0, current - 1));
+    } else if (delta < -swipeThreshold) {
+      setActiveDept((current) => Math.min(departments.length - 1, current + 1));
+    }
+    deptDragStartX.current = null;
+  };
 
   const [selectedEventIndex, setSelectedEventIndex] = useState(null);
   const [rotatingEventIndex, setRotatingEventIndex] = useState(null);
@@ -249,7 +269,17 @@ export default function AboutPage() {
             </div>
 
             {/* 3D Overlapping Card Container */}
-            <div data-reveal="zoom" className="relative w-full h-[450px] flex items-center justify-center select-none overflow-visible">
+            <div
+              data-reveal="zoom"
+              className="relative w-full h-[450px] flex items-center justify-center select-none overflow-visible cursor-grab active:cursor-grabbing touch-pan-y"
+              onTouchStart={(e) => handleDeptDragStart(e.touches[0].clientX)}
+              onTouchMove={(e) => handleDeptDragMove(e.touches[0].clientX)}
+              onTouchEnd={(e) => handleDeptDragEnd(e.changedTouches[0].clientX)}
+              onMouseDown={(e) => handleDeptDragStart(e.clientX)}
+              onMouseMove={(e) => handleDeptDragMove(e.clientX)}
+              onMouseUp={(e) => handleDeptDragEnd(e.clientX)}
+              onMouseLeave={() => { deptDragStartX.current = null; }}
+            >
               <div className="relative w-full max-w-4xl h-full flex items-center justify-center">
                 {departments.map((dept, index) => {
                   const diff = index - activeDept;
@@ -297,7 +327,7 @@ export default function AboutPage() {
                   return (
                     <div
                       key={index}
-                      onClick={() => setActiveDept(index)}
+                      onClick={() => { if (!deptDragMoved.current) setActiveDept(index); }}
                       className={`absolute left-1/2 top-4 w-72 sm:w-150 md:w-96 h-[380px] rounded-2xl overflow-hidden shadow-lg border border-outline-variant/30 transition-all duration-500 ease-out cursor-pointer ${isActive ? 'shadow-2xl border-primary/20 ring-1 ring-primary/10' : 'hover:opacity-90'
                         }`}
                       style={{
@@ -343,11 +373,14 @@ export default function AboutPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
             {offices.map((office, index) => (
-              <div
+              <a
                 key={index}
+                href={office.mapUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(office.address)}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 data-reveal
                 style={{ '--reveal-delay': `${index * 120}ms` }}
-                className="group relative flex flex-col sm:flex-row bg-surface border border-outline-variant rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/40 transition-all duration-300 ease-in-out"
+                className="group relative flex flex-col sm:flex-row bg-surface border border-outline-variant rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-primary/40 transition-all duration-300 ease-in-out cursor-pointer"
               >
                 <div className="sm:w-2/5 h-48 sm:h-auto overflow-hidden">
                   <img
@@ -372,12 +405,21 @@ export default function AboutPage() {
                   </div>
                   <div className="flex gap-3 items-center">
                     <span className="material-symbols-outlined text-primary text-xl shrink-0 transition-transform duration-300 group-hover:scale-110">call</span>
-                    <a className="font-body-sm text-body-sm text-sm hover:text-primary transition-colors" href={`tel:${office.contact.replace(/\s+/g, '')}`}>
+                    <span
+                      role="link"
+                      tabIndex={0}
+                      className="font-body-sm text-body-sm text-sm hover:text-primary transition-colors"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.location.href = `tel:${office.contact.replace(/\s+/g, '')}`;
+                      }}
+                    >
                       {office.contact}
-                    </a>
+                    </span>
                   </div>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         </section>
