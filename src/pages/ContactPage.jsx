@@ -161,6 +161,7 @@ export default function ContactPage() {
                         <input
                           className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md"
                           id="firstName"
+                          name="first_name"
                           placeholder="Juan"
                           type="text"
                           required
@@ -173,6 +174,7 @@ export default function ContactPage() {
                         <input
                           className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md"
                           id="lastName"
+                          name="last_name"
                           placeholder="Dela Cruz"
                           type="text"
                           required
@@ -188,6 +190,7 @@ export default function ContactPage() {
                         <input
                           className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md"
                           id="email"
+                          name="email"
                           placeholder="juan@example.com"
                           type="email"
                           required
@@ -200,6 +203,7 @@ export default function ContactPage() {
                         <input
                           className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md"
                           id="phone"
+                          name="phone"
                           placeholder="09XX XXX XXXX"
                           type="tel"
                           value={formData.phone}
@@ -213,14 +217,15 @@ export default function ContactPage() {
                       <select
                         className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md text-on-surface"
                         id="interest"
+                        name="interest"
                         required
                         value={formData.interest}
                         onChange={handleInputChange}
                       >
                         <option value="" disabled>Select a property</option>
-                        <option value="eblf">East West Breeze Leisure Farm &amp; Resort</option>
-                        <option value="mvlc">Mountain View Leisure Community</option>
-                        <option value="general">General Inquiry</option>
+                        <option value="Eastwest Breeze Leisure Farm &amp; Resort">East West Breeze Leisure Farm &amp; Resort</option>
+                        <option value="Mountain View Leisure Community">Mountain View Leisure Community</option>
+                        <option value="General Inquiry">General Inquiry</option>
                       </select>
                     </div>
 
@@ -229,6 +234,7 @@ export default function ContactPage() {
                       <textarea
                         className="w-full bg-surface border border-outline-variant rounded-lg px-4 py-3 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-body-md resize-none"
                         id="message"
+                        name="message"
                         placeholder="How can we help you?"
                         rows="5"
                         required
