@@ -4,4 +4,8 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  build: {
+    // Avoid publishing readable source paths/code in production artifacts.
+    sourcemap: false,
+  },
 })

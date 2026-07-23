@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { getAllProperties } from '../data/propertiesManager';
-import fallsGif from '../assets/static image/falls.gif';
+import { homeContentData } from '../data/homeContentData';
+import { resolveImage } from '../data/staticImages';
+import useScrollReveal from '../hooks/useScrollReveal';
+import { useHomeContent, useProperties } from '../hooks/useContentQueries';
 
 
 export default function HomePage() {
@@ -11,22 +13,10 @@ export default function HomePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
-  const [properties, setProperties] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: properties = [], isLoading: loading } = useProperties();
+  const { data: content = homeContentData } = useHomeContent();
 
-  useEffect(() => {
-    async function load() {
-      try {
-        const data = await getAllProperties();
-        setProperties(data);
-      } catch (e) {
-        console.error("Failed to load properties:", e);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-  }, []);
+  useScrollReveal([content, properties, loading]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -52,33 +42,33 @@ export default function HomePage() {
         <div className="absolute inset-0 z-0">
           <div 
             className="w-full h-full bg-cover bg-center" 
-            style={{ 
-              backgroundImage: `url(${fallsGif})` 
+            style={{
+              backgroundImage: `url(${resolveImage(content.hero)})`
             }}
           ></div>
           <div className="absolute inset-0 bg-primary/70 mix-blend-multiply"></div>
           <div className="absolute inset-0 bg-gradient-to-t from-deep-emerald/90 via-transparent to-transparent"></div>
         </div>
         
-        <div className="relative z-10 text-center px-margin-page max-w-4xl mx-auto mt-12">
+        <div data-reveal className="relative z-10 text-center px-margin-page max-w-4xl mx-auto mt-12">
           <h1 className="font-display-lg text-display-lg md:text-[56px] text-on-primary mb-stack-md drop-shadow-md leading-tight">
-            Bright places. Beautiful possibilities.
+            {content.hero.title}
           </h1>
           <p className="font-body-lg text-body-lg text-tertiary-fixed mb-stack-lg max-w-2xl mx-auto opacity-95">
-            A clear, premium identity for every property touchpoint. Your Best Property Investment Starts Here.
+            {content.hero.subtitle}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a 
               className="bg-on-primary text-primary px-8 py-4 rounded-lg font-subhead-lg shadow-lg hover:bg-surface-container transition-all hover:-translate-y-1 inline-block" 
               href="#properties"
             >
-              View Properties
+              {content.hero.primaryCta}
             </a>
             <a 
               className="bg-transparent border border-on-primary text-on-primary px-8 py-4 rounded-lg font-subhead-lg hover:bg-on-primary/10 transition-all inline-block" 
               href="#about"
             >
-              Learn More
+              {content.hero.secondaryCta}
             </a>
           </div>
         </div>
@@ -86,9 +76,9 @@ export default function HomePage() {
 
       {/* Featured Properties (Bento Grid) */}
       <section className="py-section-gap px-margin-page w-full" id="properties">
-        <div className="mb-stack-lg text-left">
-          <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">Featured</span>
-          <h2 className="font-headline-md text-headline-md text-slate-text mt-2">Premium Leisure Communities</h2>
+        <div data-reveal className="mb-stack-lg text-left">
+          <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">{content.featured.label}</span>
+          <h2 className="font-headline-md text-headline-md text-slate-text mt-2">{content.featured.title}</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter">
@@ -101,9 +91,11 @@ export default function HomePage() {
             properties.slice(0, 2).map((property, index) => {
               const colSpanClass = index === 0 ? 'md:col-span-7' : 'md:col-span-5';
               return (
-                <Link 
+                <Link
                   key={property.id}
-                  to={`/properties/${property.id}`} 
+                  to={`/properties/${property.id}`}
+                  data-reveal
+                  style={{ '--reveal-delay': `${index * 120}ms` }}
                   className={`${colSpanClass} group cursor-pointer`}
                 >
                   <div className="relative h-96 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-outline-variant">
@@ -142,52 +134,34 @@ export default function HomePage() {
       <section className="bg-surface-container-low py-section-gap" id="about">
         <div className="px-margin-page max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row gap-section-gap items-center">
-            <div className="lg:w-1/2">
-              <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">Why Choose Us</span>
-              <h2 className="font-headline-md text-headline-md text-slate-text mt-2 mb-stack-md">A modern real estate brand with warmth and confidence.</h2>
+            <div data-reveal="left" className="lg:w-1/2">
+              <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">{content.whyChooseUs.label}</span>
+              <h2 className="font-headline-md text-headline-md text-slate-text mt-2 mb-stack-md">{content.whyChooseUs.title}</h2>
               <p className="font-body-lg text-body-lg text-on-surface-variant mb-stack-lg">
-                This identity system balances the trust of an established realty company with the clarity and energy expected by today's property buyers.
+                {content.whyChooseUs.description}
               </p>
-              
+
               <div className="space-y-stack-md">
-                <div className="flex gap-4 items-start">
-                  <div className="bg-primary-fixed text-on-primary-fixed p-3 rounded-lg shrink-0">
-                    <span className="material-symbols-outlined fill-icon">forum</span>
+                {content.whyChooseUs.features.map((feature, index) => (
+                  <div key={index} className="flex gap-4 items-start">
+                    <div className="bg-primary-fixed text-on-primary-fixed p-3 rounded-lg shrink-0">
+                      <span className="material-symbols-outlined fill-icon">{feature.icon}</span>
+                    </div>
+                    <div>
+                      <h4 className="font-subhead-lg text-subhead-lg text-slate-text">{feature.title}</h4>
+                      <p className="font-body-md text-on-surface-variant mt-1">{feature.desc}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-subhead-lg text-subhead-lg text-slate-text">Communication</h4>
-                    <p className="font-body-md text-on-surface-variant mt-1">Experience seamless communication where clear channels promote collaboration and understanding.</p>
-                  </div>
-                </div>
-                
-                <div className="flex gap-4 items-start">
-                  <div className="bg-primary-fixed text-on-primary-fixed p-3 rounded-lg shrink-0">
-                    <span className="material-symbols-outlined fill-icon">verified</span>
-                  </div>
-                  <div>
-                    <h4 className="font-subhead-lg text-subhead-lg text-slate-text">Reliability</h4>
-                    <p className="font-body-md text-on-surface-variant mt-1">Trust in unwavering reliability. With a steadfast commitment to quality and consistency, we deliver on our promises.</p>
-                  </div>
-                </div>
-                
-                <div className="flex gap-4 items-start">
-                  <div className="bg-primary-fixed text-on-primary-fixed p-3 rounded-lg shrink-0">
-                    <span className="material-symbols-outlined fill-icon">location_on</span>
-                  </div>
-                  <div>
-                    <h4 className="font-subhead-lg text-subhead-lg text-slate-text">Prime Location</h4>
-                    <p className="font-body-md text-on-surface-variant mt-1">Discover unparalleled convenience with strategic positioning offering easy access to key destinations.</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
-            <div className="lg:w-1/2 relative mt-8 lg:mt-0">
+            <div data-reveal="right" className="lg:w-1/2 relative mt-8 lg:mt-0">
               <div className="aspect-square rounded-2xl overflow-hidden shadow-lg border border-outline-variant relative">
-                <img 
-                  className="w-full h-full object-cover" 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcz4ZJKb6HP1nh3jM4LnWgsMyIOApmPTbvmQ3JqeZFvl9clo36R-rYpAfrBAExluuMKr-e2BBaGSTEzjZyFs_RR21vzbU4N7QErlrXZSLE9WU-X4jnz5pVgnGOKz3DrTaiMBkqJxrNOHM6TDYc44PgJSyIL7nelgmA1JBINfm8lFEXltDZ3GZIupzozNm370xBLv3HzA1HqPxcHY8QQvLWTPPNriFyW2xGlcYnnrPwUf5ocFnJTxWdRY0Ajf5ZpdOjZGo-13o6458" 
-                  alt="Modern Luxury Interior" 
+                <img
+                  className="w-full h-full object-cover"
+                  src={content.whyChooseUs.image}
+                  alt="Modern Luxury Interior"
                 />
                 <div className="absolute inset-0 bg-primary/10"></div>
               </div>
@@ -199,8 +173,8 @@ export default function HomePage() {
                     <span className="material-symbols-outlined">psychiatry</span>
                   </div>
                   <div>
-                    <p className="font-subhead-lg text-slate-text">Sustainable Growth</p>
-                    <p className="font-body-sm text-on-surface-variant">Harmonious with nature</p>
+                    <p className="font-subhead-lg text-slate-text">{content.whyChooseUs.card.title}</p>
+                    <p className="font-body-sm text-on-surface-variant">{content.whyChooseUs.card.subtitle}</p>
                   </div>
                 </div>
               </div>
@@ -215,25 +189,25 @@ export default function HomePage() {
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-primary-fixed/20 rounded-full blur-3xl -z-10"></div>
         
         <div className="grid md:grid-cols-2 gap-gutter relative z-10">
-          <div className="bg-surface/80 backdrop-blur-md p-8 md:p-12 rounded-2xl border border-outline-variant shadow-sm hover:shadow-md transition-all duration-300">
+          <div data-reveal className="bg-surface/80 backdrop-blur-md p-8 md:p-12 rounded-2xl border border-outline-variant shadow-sm hover:shadow-md transition-all duration-300">
             <span className="material-symbols-outlined text-primary text-4xl mb-4">flag</span>
-            <h3 className="font-headline-md text-headline-md text-slate-text mb-4">Mission</h3>
+            <h3 className="font-headline-md text-headline-md text-slate-text mb-4">{content.mission.title}</h3>
             <p className="font-body-lg text-body-lg text-on-surface-variant mb-6">
-              To guide clients toward property opportunities with clarity, integrity, and attentive service - helping them make confident decisions and create lasting value.
+              {content.mission.text}
             </p>
             <div className="pt-6 border-t border-outline-variant">
-              <p className="font-label-caps text-label-caps text-primary">DIRECTION: TRUST / SERVICE / VALUE</p>
+              <p className="font-label-caps text-label-caps text-primary">{content.mission.direction}</p>
             </div>
           </div>
           
-          <div className="bg-surface/80 backdrop-blur-md p-8 md:p-12 rounded-2xl border border-outline-variant shadow-sm hover:shadow-md transition-all duration-300">
+          <div data-reveal style={{ '--reveal-delay': '120ms' }} className="bg-surface/80 backdrop-blur-md p-8 md:p-12 rounded-2xl border border-outline-variant shadow-sm hover:shadow-md transition-all duration-300">
             <span className="material-symbols-outlined text-primary text-4xl mb-4">visibility</span>
-            <h3 className="font-headline-md text-headline-md text-slate-text mb-4">Vision</h3>
+            <h3 className="font-headline-md text-headline-md text-slate-text mb-4">{content.vision.title}</h3>
             <p className="font-body-lg text-body-lg text-on-surface-variant mb-6">
-              To become a trusted Philippine real estate brand known for beautiful places, responsible growth, and relationships that endure.
+              {content.vision.text}
             </p>
             <div className="pt-6 border-t border-outline-variant">
-              <p className="font-label-caps text-label-caps text-primary">DIRECTION: PLACE / PROGRESS / PARTNERSHIP</p>
+              <p className="font-label-caps text-label-caps text-primary">{content.vision.direction}</p>
             </div>
           </div>
         </div>
@@ -241,16 +215,16 @@ export default function HomePage() {
 
       {/* CTA Section */}
       <section className="bg-primary text-on-primary py-section-gap text-center px-margin-page" id="contact">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="font-headline-md text-headline-md mb-stack-md">Ready to Invest?</h2>
+        <div data-reveal="zoom" className="max-w-3xl mx-auto">
+          <h2 className="font-headline-md text-headline-md mb-stack-md">{content.cta.title}</h2>
           <p className="font-body-lg text-body-lg text-tertiary-fixed mb-stack-lg">
-            Begin your journey here and explore the best property investments.
+            {content.cta.text}
           </p>
-          <button 
+          <button
             onClick={() => setModalOpen(true)}
             className="bg-on-primary text-primary px-8 py-4 rounded-lg font-subhead-lg hover:bg-surface-container transition-colors shadow-sm cursor-pointer"
           >
-            Contact Our Specialists
+            {content.cta.button}
           </button>
         </div>
       </section>

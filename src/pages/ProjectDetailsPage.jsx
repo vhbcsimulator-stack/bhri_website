@@ -1,30 +1,63 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Footer from '../components/Footer';
-import { getPropertyById } from '../data/propertiesManager';
+import GalleryBento from '../components/GalleryBento';
+import useScrollReveal from '../hooks/useScrollReveal';
+import { usePropertyById } from '../hooks/useContentQueries';
 
 export default function ProjectDetailsPage() {
   const { projectId } = useParams();
-  const [property, setProperty] = useState(null);
-  const [loading, setLoading] = useState(true);
-  
+  const { data: property, isLoading: loading } = usePropertyById(projectId);
+
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+  const [lightbox, setLightbox] = useState(null); // { items: [{image, title}], index }
+  const touchStartX = React.useRef(null);
+
+  useScrollReveal([property, loading]);
+
+  const openLightbox = (items, index) => setLightbox({ items, index });
+  const closeLightbox = () => setLightbox(null);
+
+  const showPrevLightbox = useCallback(() => {
+    setLightbox((current) =>
+      current ? { ...current, index: (current.index - 1 + current.items.length) % current.items.length } : current
+    );
+  }, []);
+
+  const showNextLightbox = useCallback(() => {
+    setLightbox((current) =>
+      current ? { ...current, index: (current.index + 1) % current.items.length } : current
+    );
+  }, []);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(deltaX) > 50) {
+      if (deltaX > 0) showPrevLightbox();
+      else showNextLightbox();
+    }
+    touchStartX.current = null;
+  };
 
   useEffect(() => {
-    async function load() {
-      setLoading(true);
-      try {
-        const data = await getPropertyById(projectId);
-        setProperty(data);
-      } catch (e) {
-        console.error("Failed to load property details:", e);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
+    if (!lightbox) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') showPrevLightbox();
+      if (e.key === 'ArrowRight') showNextLightbox();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightbox, showPrevLightbox, showNextLightbox]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, [projectId]);
 
@@ -162,7 +195,7 @@ export default function ProjectDetailsPage() {
           </div>
           
           <div className="relative z-10 px-margin-page max-w-7xl mx-auto w-full text-white">
-            <div className="max-w-3xl">
+            <div data-reveal className="max-w-3xl">
               <span className="inline-block mb-4 px-4 py-1 rounded-full bg-secondary-container/20 border border-secondary-container/40 font-subhead-sm text-secondary-container uppercase tracking-widest">
                 {property.intro.tag}
               </span>
@@ -194,7 +227,7 @@ export default function ProjectDetailsPage() {
         {/* Overview Section */}
         <section id="overview" className="py-section-gap px-margin-page bg-surface-container-lowest scroll-mt-24">
           <div className="max-w-7xl mx-auto grid md:grid-cols-12 gap-12 items-center">
-            <div className="md:col-span-7 space-y-6">
+            <div data-reveal="left" className="md:col-span-7 space-y-6">
               <h2 className="font-headline-md text-headline-md text-primary">
                 {property.intro.title}
               </h2>
@@ -220,7 +253,7 @@ export default function ProjectDetailsPage() {
               </div>
             </div>
             
-            <div className="md:col-span-5 relative group mt-8 md:mt-0">
+            <div data-reveal="right" className="md:col-span-5 relative group mt-8 md:mt-0">
               <div className="absolute -inset-4 bg-primary-fixed-dim/20 rounded-2xl -z-10 transition-all group-hover:scale-105"></div>
               <img 
                 className="rounded-xl shadow-2xl w-full aspect-[4/3] object-cover relative z-10" 
@@ -233,7 +266,7 @@ export default function ProjectDetailsPage() {
 
         {/* Facilities Section */}
         <section id="facilities" className="py-section-gap px-margin-page bg-surface scroll-mt-24">
-          <div className="max-w-3xl mx-auto mb-12 text-center">
+          <div data-reveal className="max-w-3xl mx-auto mb-12 text-center">
             <h2 className="font-headline-md text-headline-md text-primary mb-4">
               {property.facilities.title}
             </h2>
@@ -243,62 +276,16 @@ export default function ProjectDetailsPage() {
           </div>
 
           {/* Conditional Layout Rendering */}
-          {property.facilities.style === 'bento-ewb' ? (
-            /* East West Breeze Bento Layout */
-            <div className="max-w-7xl mx-auto grid grid-rows-2 grid-flow-col auto-cols-[250px] md:auto-cols-[290px] gap-4 h-[450px] md:h-[600px] overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
-              {property.facilities.items.map((facility, index) => {
-                const classes = index === 0 
-                  ? 'row-span-2 col-span-2' 
-                  : 'row-span-1 col-span-1';
-                
-                return (
-                  <div 
-                    key={facility.id || index}
-                    className={`${classes} relative group overflow-hidden rounded-2xl shadow-lg h-full`}
-                  >
-                    <img 
-                      alt={facility.title} 
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                      src={facility.image}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-deep-emerald/80 via-transparent to-transparent flex items-end p-6">
-                      <h3 className="font-headline-md text-white text-xl md:text-2xl">{facility.title}</h3>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            /* Mountain View Bento Layout */
-            <div className="max-w-7xl mx-auto grid grid-rows-2 grid-flow-col auto-cols-[250px] md:auto-cols-[290px] gap-4 h-[450px] md:h-[600px] overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
-              {property.facilities.items.map((facility, index) => {
-                let classes = 'row-span-1 col-span-1';
-                if (index === 0) classes = 'row-span-2 col-span-2';
-                else if (index === 3) classes = 'row-span-1 col-span-2';
-                
-                return (
-                  <div 
-                    key={facility.id || index}
-                    className={`${classes} relative group overflow-hidden rounded-2xl shadow-lg h-full`}
-                  >
-                    <img 
-                      alt={facility.title} 
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                      src={facility.image}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-deep-emerald/80 via-transparent to-transparent flex items-end p-6">
-                      <h3 className="font-headline-md text-white text-xl md:text-2xl">{facility.title}</h3>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          <GalleryBento
+            items={property.facilities.items}
+            wideFourth={property.facilities.style !== 'bento-ewb'}
+            onOpen={(index) => openLightbox(property.facilities.items, index)}
+          />
         </section>
 
         {/* Project Developments Section */}
         <section id="developments" className="py-section-gap px-margin-page bg-surface-container-low scroll-mt-24">
-          <div className="max-w-7xl mx-auto text-center mb-16">
+          <div data-reveal className="max-w-7xl mx-auto text-center mb-16">
             <h2 className="font-headline-md text-headline-md text-primary mb-4">
               {property.developments?.title || "Project Developments"}
             </h2>
@@ -307,57 +294,11 @@ export default function ProjectDetailsPage() {
             </p>
           </div>
           
-          {property.developments?.style === 'bento-mv' ? (
-            /* Mountain View Bento Developments Layout */
-            <div className="max-w-7xl mx-auto grid grid-rows-2 grid-flow-col auto-cols-[250px] md:auto-cols-[290px] gap-4 h-[450px] md:h-[600px] overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
-              {(property.developments.items || []).map((dev, index) => {
-                let classes = 'row-span-1 col-span-1';
-                if (index === 0) classes = 'row-span-2 col-span-2';
-                else if (index === 3) classes = 'row-span-1 col-span-2';
-                
-                return (
-                  <div 
-                    key={dev.id || index}
-                    className={`${classes} relative group overflow-hidden rounded-2xl shadow-lg h-full`}
-                  >
-                    <img 
-                      alt={dev.title} 
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                      src={dev.image}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-deep-emerald/80 via-transparent to-transparent flex items-end p-6">
-                      <h3 className="font-headline-md text-white text-xl md:text-2xl">{dev.title}</h3>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            /* EWB Bento Developments Layout */
-            <div className="max-w-7xl mx-auto grid grid-rows-2 grid-flow-col auto-cols-[250px] md:auto-cols-[290px] gap-4 h-[450px] md:h-[600px] overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
-              {(property.developments?.items || []).map((dev, index) => {
-                const classes = index === 0 
-                  ? 'row-span-2 col-span-2' 
-                  : 'row-span-1 col-span-1';
-                
-                return (
-                  <div 
-                    key={dev.id || index}
-                    className={`${classes} relative group overflow-hidden rounded-2xl shadow-lg h-full`}
-                  >
-                    <img 
-                      alt={dev.title} 
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-                      src={dev.image}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-deep-emerald/80 via-transparent to-transparent flex items-end p-6">
-                      <h3 className="font-headline-md text-white text-xl md:text-2xl">{dev.title}</h3>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          <GalleryBento
+            items={property.developments?.items || []}
+            wideFourth={property.developments?.style === 'bento-mv'}
+            onOpen={(index) => openLightbox(property.developments.items, index)}
+          />
         </section>
 
         {/* Investment Section */}
@@ -365,11 +306,11 @@ export default function ProjectDetailsPage() {
           {property.investment.style === 'bento-ewb-inv' ? (
             /* East West Breeze Bento Investment */
             <div className="max-w-7xl mx-auto">
-              <h2 className="font-headline-md text-headline-md text-primary mb-12 text-center">
+              <h2 data-reveal className="font-headline-md text-headline-md text-primary mb-12 text-center">
                 {property.investment.title}
               </h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+
+              <div data-reveal className="grid grid-cols-1 md:grid-cols-12 gap-6">
                 {/* Large Item */}
                 <div className="col-span-12 md:col-span-8 bg-primary rounded-3xl p-8 md:p-12 text-on-primary relative overflow-hidden flex flex-col justify-between min-h-[350px]">
                   <div className="relative z-10">
@@ -430,7 +371,7 @@ export default function ProjectDetailsPage() {
           ) : (
             /* Mountain View Asymmetric List & Asymmetric Images Layout */
             <div className="max-w-7xl mx-auto grid md:grid-cols-12 gap-16 items-center">
-              <div className="md:col-span-6 space-y-8">
+              <div data-reveal="left" className="md:col-span-6 space-y-8">
                 <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">Investment</span>
                 <h2 className="font-headline-md text-headline-md text-primary leading-tight">
                   {property.investment.title}
@@ -468,7 +409,7 @@ export default function ProjectDetailsPage() {
               </div>
 
               {/* Asymmetric Grid of 4 Images */}
-              <div className="md:col-span-6 grid grid-cols-2 gap-4">
+              <div data-reveal="right" className="md:col-span-6 grid grid-cols-2 gap-4">
                 <div className="space-y-4">
                   <img 
                     className="rounded-xl w-full aspect-square object-cover shadow-xl hover:scale-[1.02] transition-transform duration-300" 
@@ -501,7 +442,7 @@ export default function ProjectDetailsPage() {
         {/* Lead Inquiry Submission Section */}
         <section id="inquire" className="py-section-gap px-margin-page bg-surface-container-lowest scroll-mt-24">
           <div className="max-w-7xl mx-auto">
-            <div className="bg-deep-emerald rounded-3xl overflow-hidden flex flex-col lg:flex-row shadow-2xl">
+            <div data-reveal="zoom" className="bg-deep-emerald rounded-3xl overflow-hidden flex flex-col lg:flex-row shadow-2xl">
               
               {/* Form Info Box */}
               <div className="lg:w-1/2 p-12 md:p-20 text-white flex flex-col justify-between">
@@ -617,6 +558,111 @@ export default function ProjectDetailsPage() {
       </main>
 
       <Footer />
+
+      {/* Image Lightbox */}
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 md:p-10 animate-fadeIn"
+          onClick={closeLightbox}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Ambient glow */}
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(255,255,255,0.06),transparent_60%)]" />
+
+          {/* Top bar: counter + close */}
+          <div className="absolute top-0 left-0 right-0 flex items-center justify-between p-4 md:p-6 z-10">
+            <span className="font-subhead-sm text-white/80 tracking-widest text-xs bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10">
+              {lightbox.index + 1} / {lightbox.items.length}
+            </span>
+            <button
+              type="button"
+              onClick={closeLightbox}
+              className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 hover:rotate-90 text-white flex items-center justify-center transition-all duration-300 cursor-pointer"
+              aria-label="Close"
+            >
+              <span className="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          {lightbox.items.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); showPrevLightbox(); }}
+                className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 hover:bg-white/20 hover:scale-110 text-white flex items-center justify-center transition-all duration-200 cursor-pointer z-10"
+                aria-label="Previous image"
+              >
+                <span className="material-symbols-outlined">chevron_left</span>
+              </button>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); showNextLightbox(); }}
+                className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 hover:bg-white/20 hover:scale-110 text-white flex items-center justify-center transition-all duration-200 cursor-pointer z-10"
+                aria-label="Next image"
+              >
+                <span className="material-symbols-outlined">chevron_right</span>
+              </button>
+            </>
+          )}
+
+          <div
+            className="w-full max-w-5xl max-h-full flex flex-col items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <LightboxImage
+              key={lightbox.index}
+              src={lightbox.items[lightbox.index].image}
+              alt={lightbox.items[lightbox.index].title || 'Enlarged view'}
+            />
+
+            {lightbox.items[lightbox.index].title && (
+              <h3 className="font-headline-md text-white text-xl md:text-2xl mt-5 text-center transition-opacity duration-300">
+                {lightbox.items[lightbox.index].title}
+              </h3>
+            )}
+
+            {/* Thumbnail strip */}
+            {lightbox.items.length > 1 && (
+              <div className="mt-6 flex gap-2 overflow-x-auto max-w-full px-2 pb-1 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+                {lightbox.items.map((item, idx) => (
+                  <button
+                    key={item.id || idx}
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setLightbox((current) => current ? { ...current, index: idx } : current); }}
+                    className={`relative shrink-0 w-16 h-12 md:w-20 md:h-14 rounded-lg overflow-hidden transition-all duration-300 cursor-pointer ${
+                      idx === lightbox.index
+                        ? 'ring-2 ring-secondary-container opacity-100 scale-105'
+                        : 'ring-1 ring-white/15 opacity-50 hover:opacity-80'
+                    }`}
+                    aria-label={`View image ${idx + 1}`}
+                  >
+                    <img src={item.image} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LightboxImage({ src, alt }) {
+  const [loaded, setLoaded] = useState(false);
+
+  return (
+    <div className="relative w-full flex items-center justify-center">
+      {!loaded && (
+        <div className="absolute animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-white/60"></div>
+      )}
+      <img
+        src={src}
+        alt={alt}
+        onLoad={() => setLoaded(true)}
+        className={`max-w-full max-h-[70vh] object-contain rounded-xl shadow-2xl transition-opacity duration-500 ease-out animate-scaleUp ${loaded ? 'opacity-100' : 'opacity-0'}`}
+      />
     </div>
   );
 }
