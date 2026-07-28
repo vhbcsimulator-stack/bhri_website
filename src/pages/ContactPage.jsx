@@ -4,6 +4,7 @@ import Footer from '../components/Footer';
 import { contactContentData } from '../data/contactContentData';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { useContactContent } from '../hooks/useContentQueries';
+import { scrollToId } from '../utils/scrollToSection';
 
 export default function ContactPage() {
   const { data: content = contactContentData } = useContactContent();
@@ -52,7 +53,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-surface text-on-surface font-body-md antialiased flex flex-col">
-      <Navbar onOpenModal={() => window.scrollTo({ top: document.getElementById('inquiry-form').offsetTop - 100, behavior: 'smooth' })} />
+      <Navbar onOpenModal={() => scrollToId('inquiry-form')} />
 
       <main className="w-full flex-grow">
         {/* Hero Section */}
@@ -86,7 +87,7 @@ export default function ContactPage() {
         </section>
 
         {/* Contact & Form Bento Grid */}
-        <section className="max-w-7xl mx-auto px-margin-page py-section-gap" id="inquiry-form">
+        <section className="max-w-7xl mx-auto px-margin-page py-section-gap scroll-mt-24" id="inquiry-form">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
 
             {/* Contact Info Cards */}

@@ -58,24 +58,24 @@ export default function HomePage() {
             {content.hero.subtitle}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a 
-              className="bg-on-primary text-primary px-8 py-4 rounded-lg font-subhead-lg shadow-lg hover:bg-surface-container transition-all hover:-translate-y-1 inline-block" 
-              href="#properties"
+            <Link
+              className="bg-on-primary text-primary px-8 py-4 rounded-lg font-subhead-lg shadow-lg hover:bg-surface-container transition-all hover:-translate-y-1 inline-block"
+              to="/#properties"
             >
               {content.hero.primaryCta}
-            </a>
-            <a 
-              className="bg-transparent border border-on-primary text-on-primary px-8 py-4 rounded-lg font-subhead-lg hover:bg-on-primary/10 transition-all inline-block" 
-              href="#about"
+            </Link>
+            <Link
+              className="bg-transparent border border-on-primary text-on-primary px-8 py-4 rounded-lg font-subhead-lg hover:bg-on-primary/10 transition-all inline-block"
+              to="/#about"
             >
               {content.hero.secondaryCta}
-            </a>
+            </Link>
           </div>
         </div>
       </header>
 
       {/* Featured Properties (Bento Grid) */}
-      <section className="py-section-gap px-margin-page w-full" id="properties">
+      <section className="py-section-gap px-margin-page w-full scroll-mt-24" id="properties">
         <div data-reveal className="mb-stack-lg text-left">
           <span className="font-label-caps text-label-caps text-primary uppercase tracking-widest">{content.featured.label}</span>
           <h2 className="font-headline-md text-headline-md text-slate-text mt-2">{content.featured.title}</h2>
@@ -131,7 +131,7 @@ export default function HomePage() {
       </section>
 
       {/* Value Proposition */}
-      <section className="bg-surface-container-low py-section-gap" id="about">
+      <section className="bg-surface-container-low py-section-gap scroll-mt-24" id="about">
         <div className="px-margin-page max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row gap-section-gap items-center">
             <div data-reveal="left" className="lg:w-1/2">

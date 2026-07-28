@@ -28,3 +28,4 @@ dist-ssr
 
 # Exclude admin folder for website-only deployment
 admin/
+.claude/

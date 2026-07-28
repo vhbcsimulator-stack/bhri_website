@@ -11,26 +11,22 @@ import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import CookiesPage from './pages/CookiesPage';
 import SitemapPage from './pages/SitemapPage';
+import { scrollToIdWhenReady } from './utils/scrollToSection';
 
 // UX Helper to handle scrolling behavior on route changes and hash navigation
 function ScrollToTop() {
-  const { pathname, hash } = useLocation();
+  const { pathname, hash, key } = useLocation();
 
+  // `key` is in the deps so navigating to the hash you are already on still
+  // re-scrolls instead of silently doing nothing.
   useEffect(() => {
     if (hash) {
-      // Small timeout to allow target element to render before scrolling
-      const timer = setTimeout(() => {
-        const id = hash.replace('#', '');
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-      return () => clearTimeout(timer);
-    } else {
-      window.scrollTo(0, 0);
+      // The target section may not exist yet while page content is loading,
+      // so keep trying for a short while instead of guessing a fixed delay.
+      return scrollToIdWhenReady(decodeURIComponent(hash.slice(1)));
     }
-  }, [pathname, hash]);
+    window.scrollTo(0, 0);
+  }, [pathname, hash, key]);
 
   return null;
 }

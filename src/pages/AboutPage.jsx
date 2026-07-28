@@ -256,7 +256,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Company Departments (3D Deck Slider) */}
+        {/* Company Departments */}
         <section className="bg-surface py-section-gap overflow-hidden border-t border-b border-outline-variant/30">
           <div className="max-w-7xl mx-auto px-margin-page">
             <div data-reveal className="text-center max-w-2xl mx-auto mb-12 space-y-stack-sm">
@@ -328,7 +328,7 @@ export default function AboutPage() {
                     <div
                       key={index}
                       onClick={() => { if (!deptDragMoved.current) setActiveDept(index); }}
-                      className={`absolute left-1/2 top-4 w-72 sm:w-150 md:w-96 h-[380px] rounded-2xl overflow-hidden shadow-lg border border-outline-variant/30 transition-all duration-500 ease-out cursor-pointer ${isActive ? 'shadow-2xl border-primary/20 ring-1 ring-primary/10' : 'hover:opacity-90'
+                      className={`absolute left-1/2 top-4 w-[20rem] sm:w-[30rem] md:w-[36rem] h-[380px] rounded-2xl overflow-hidden shadow-lg border border-outline-variant/30 transition-all duration-500 ease-out cursor-pointer ${isActive ? 'shadow-2xl border-primary/20 ring-1 ring-primary/10' : 'hover:opacity-90'
                         }`}
                       style={{
                         transform: `translateX(${translatePercent}%) scale(${scale})`,

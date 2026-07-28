@@ -4,6 +4,7 @@ import Footer from '../components/Footer';
 import GalleryBento from '../components/GalleryBento';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { usePropertyById } from '../hooks/useContentQueries';
+import { scrollToId } from '../utils/scrollToSection';
 
 export default function ProjectDetailsPage() {
   const { projectId } = useParams();
@@ -103,19 +104,7 @@ export default function ProjectDetailsPage() {
 
   const handleScrollToSection = (id) => {
     setActiveTab(id);
-    const element = document.getElementById(id);
-    if (element) {
-      const offset = 90; // Sticky Project Header offset
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = element.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
+    scrollToId(id);
   };
 
   return (
