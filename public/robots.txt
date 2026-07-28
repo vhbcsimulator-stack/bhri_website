@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://brighthermosarealty.com/sitemap_index.xml
+Sitemap: https://bhri.com.ph/sitemap_index.xml

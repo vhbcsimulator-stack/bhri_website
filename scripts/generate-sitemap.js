@@ -29,7 +29,7 @@ const loadEnv = () => {
 loadEnv();
 
 // Base URL (VITE_SITE_URL in .env, fallback to default production domain)
-const siteUrl = process.env.VITE_SITE_URL || 'https://brighthermosarealty.com';
+const siteUrl = process.env.VITE_SITE_URL || 'https://bhri.com.ph';
 console.log(`Generating sitemaps for site URL: ${siteUrl}`);
 
 const publicDir = path.resolve(__dirname, '../public');
