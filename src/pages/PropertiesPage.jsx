@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { PageLoadError } from '../components/PageState';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { useProperties } from '../hooks/useContentQueries';
 import useSeo from '../hooks/useSeo';
@@ -11,7 +12,7 @@ export default function PropertiesPage() {
   const [selectedType, setSelectedType] = useState('');
   const [appliedFilters, setAppliedFilters] = useState({ location: '', type: '' });
 
-  const { data: properties = [], isLoading: loading } = useProperties();
+  const { data: properties = [], isLoading: loading, isError, refetch } = useProperties();
 
   useSeo({
     title: 'Our Properties',
@@ -38,6 +39,8 @@ export default function PropertiesPage() {
   const handleApplyFilters = () => {
     setAppliedFilters({ location: selectedLocation, type: selectedType });
   };
+
+  if (isError) return <PageLoadError onRetry={refetch} />;
 
   return (
     <div className="min-h-screen bg-background text-on-background font-body-md antialiased flex flex-col">

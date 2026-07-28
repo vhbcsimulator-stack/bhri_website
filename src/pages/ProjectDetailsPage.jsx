@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Footer from '../components/Footer';
 import GalleryBento from '../components/GalleryBento';
+import { PageLoader, PageLoadError } from '../components/PageState';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { usePropertyById } from '../hooks/useContentQueries';
 import { scrollToId } from '../utils/scrollToSection';
@@ -9,7 +10,7 @@ import useSeo from '../hooks/useSeo';
 
 export default function ProjectDetailsPage() {
   const { projectId } = useParams();
-  const { data: property, isLoading: loading } = usePropertyById(projectId);
+  const { data: property, isLoading: loading, isError, refetch } = usePropertyById(projectId);
 
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
@@ -70,12 +71,12 @@ export default function ProjectDetailsPage() {
     window.scrollTo(0, 0);
   }, [projectId]);
 
+  if (isError) {
+    return <PageLoadError onRetry={refetch} />;
+  }
+
   if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   if (!property) {

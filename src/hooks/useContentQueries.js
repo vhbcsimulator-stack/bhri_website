@@ -1,37 +1,28 @@
 import { useQuery } from '@tanstack/react-query';
-import { getHomeContent } from '../data/homeContentManager';
-import { getAboutContent } from '../data/aboutContentManager';
-import { getCareerContent } from '../data/careerContentManager';
-import { getContactContent } from '../data/contactContentManager';
-import { getPrivacyContent } from '../data/privacyContentManager';
-import { getTermsContent } from '../data/termsContentManager';
-import { getCookiesContent } from '../data/cookiesContentManager';
-import { getSitemapContent } from '../data/sitemapContentManager';
+import { fetchPageContent } from '../data/contentStore';
 import { getAllProperties, getPropertyById } from '../data/propertiesManager';
 
-export const useHomeContent = () =>
-  useQuery({ queryKey: ['content', 'home'], queryFn: getHomeContent });
+// Every page reads its content straight from Supabase, cached by React Query.
+const pageContentQuery = (pageId) => ({
+  queryKey: ['content', pageId],
+  queryFn: () => fetchPageContent(pageId),
+});
 
-export const useAboutContent = () =>
-  useQuery({ queryKey: ['content', 'about'], queryFn: getAboutContent });
+export const useHomeContent = () => useQuery(pageContentQuery('home'));
 
-export const useCareerContent = () =>
-  useQuery({ queryKey: ['content', 'career'], queryFn: getCareerContent });
+export const useAboutContent = () => useQuery(pageContentQuery('about'));
 
-export const useContactContent = () =>
-  useQuery({ queryKey: ['content', 'contact'], queryFn: getContactContent });
+export const useCareerContent = () => useQuery(pageContentQuery('career'));
 
-export const usePrivacyContent = () =>
-  useQuery({ queryKey: ['content', 'privacy'], queryFn: getPrivacyContent });
+export const useContactContent = () => useQuery(pageContentQuery('contact'));
 
-export const useTermsContent = () =>
-  useQuery({ queryKey: ['content', 'terms'], queryFn: getTermsContent });
+export const usePrivacyContent = () => useQuery(pageContentQuery('privacy'));
 
-export const useCookiesContent = () =>
-  useQuery({ queryKey: ['content', 'cookies'], queryFn: getCookiesContent });
+export const useTermsContent = () => useQuery(pageContentQuery('terms'));
 
-export const useSitemapContent = () =>
-  useQuery({ queryKey: ['content', 'sitemap'], queryFn: getSitemapContent });
+export const useCookiesContent = () => useQuery(pageContentQuery('cookies'));
+
+export const useSitemapContent = () => useQuery(pageContentQuery('sitemap'));
 
 export const useProperties = () =>
   useQuery({ queryKey: ['properties'], queryFn: getAllProperties });

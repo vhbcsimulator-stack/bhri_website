@@ -3,6 +3,7 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ApplyModal from '../components/ApplyModal';
+import { PageLoader, PageLoadError } from '../components/PageState';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { useCareerContent } from '../hooks/useContentQueries';
 import useSeo from '../hooks/useSeo';
@@ -10,8 +11,8 @@ import useSeo from '../hooks/useSeo';
 export default function JobDetailsPage() {
   const { jobId } = useParams();
   const [applyOpen, setApplyOpen] = useState(false);
-  const { data: career, isLoading } = useCareerContent();
-  const role = career?.roles.items.find((r) => r.id === jobId);
+  const { data: career, isLoading, isError, refetch } = useCareerContent();
+  const role = career?.roles?.items?.find((r) => r.id === jobId);
 
   useScrollReveal([career]);
 
@@ -21,16 +22,16 @@ export default function JobDetailsPage() {
     keywords: role ? `${role.title}, ${role.location}, real estate job, ${role.jobCategory}, Bright Hermosa Realty careers` : ''
   });
 
+  if (isError) {
+    return <PageLoadError onRetry={refetch} />;
+  }
+
   if (!isLoading && career && !role) {
     return <Navigate to="/careers" replace />;
   }
 
   if (!career || !role) {
-    return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   const otherRoles = career.roles.items.filter((r) => r.id !== role.id).slice(0, 3);

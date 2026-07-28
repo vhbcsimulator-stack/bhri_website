@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { homeContentData } from '../data/homeContentData';
 import { resolveImage } from '../data/staticImages';
+import { PageLoader, PageLoadError } from '../components/PageState';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { useHomeContent, useProperties } from '../hooks/useContentQueries';
 import useSeo from '../hooks/useSeo';
@@ -15,7 +15,7 @@ export default function HomePage() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const { data: properties = [], isLoading: loading } = useProperties();
-  const { data: content = homeContentData } = useHomeContent();
+  const { data: content, isPending, isError, refetch } = useHomeContent();
 
   useScrollReveal([content, properties, loading]);
 
@@ -39,6 +39,9 @@ export default function HomePage() {
       setFormData({ name: '', email: '', phone: '', message: '' });
     }, 2500);
   };
+
+  if (isError) return <PageLoadError onRetry={refetch} />;
+  if (isPending || !content) return <PageLoader />;
 
   return (
     <div className="min-h-screen bg-background text-on-background font-body-md antialiased flex flex-col">

@@ -2,13 +2,13 @@ import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { careerContentData } from '../data/careerContentData';
+import { PageLoader, PageLoadError } from '../components/PageState';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { useCareerContent } from '../hooks/useContentQueries';
 import useSeo from '../hooks/useSeo';
 
 export default function CareerPage() {
-  const { data: content = careerContentData } = useCareerContent();
+  const { data: content, isPending, isError, refetch } = useCareerContent();
 
   useScrollReveal([content]);
 
@@ -24,7 +24,10 @@ export default function CareerPage() {
   const [jobLocation, setJobLocation] = useState('All');
   const [appliedFilters, setAppliedFilters] = useState({ category: 'All', jobType: 'All', jobLocation: 'All' });
 
-  const roleItems = content.roles.items;
+  // Guarded with `?? []` only so the memos below can run before the content
+  // query resolves; the component returns a loader until `content` exists.
+  // Memoised so the empty-array fallback keeps a stable identity across renders.
+  const roleItems = useMemo(() => content?.roles?.items ?? [], [content]);
 
   const categories = useMemo(() => ['All', ...new Set(roleItems.map((r) => r.jobCategory).filter(Boolean))], [roleItems]);
   const jobTypes = useMemo(() => ['All', ...new Set(roleItems.map((r) => r.jobType).filter(Boolean))], [roleItems]);
@@ -45,6 +48,9 @@ export default function CareerPage() {
       return matchesQuery && matchesCategory && matchesType && matchesLocation;
     });
   }, [roleItems, search, appliedFilters]);
+
+  if (isError) return <PageLoadError onRetry={refetch} />;
+  if (isPending || !content) return <PageLoader />;
 
   return (
     <div className="min-h-screen bg-surface text-on-surface font-body-md antialiased flex flex-col">

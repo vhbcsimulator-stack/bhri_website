@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { contactContentData } from '../data/contactContentData';
+import { PageLoader, PageLoadError } from '../components/PageState';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { useContactContent } from '../hooks/useContentQueries';
 import { scrollToId } from '../utils/scrollToSection';
 import useSeo from '../hooks/useSeo';
 
 export default function ContactPage() {
-  const { data: content = contactContentData } = useContactContent();
+  const { data: content, isPending, isError, refetch } = useContactContent();
 
   useScrollReveal([content]);
 
@@ -55,6 +55,9 @@ export default function ContactPage() {
   const toggleFaq = (index) => {
     setActiveFaq(activeFaq === index ? null : index);
   };
+
+  if (isError) return <PageLoadError onRetry={refetch} />;
+  if (isPending || !content) return <PageLoader />;
 
   const faqItems = content.faq.items;
 

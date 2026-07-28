@@ -2,15 +2,15 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import { aboutContentData } from '../data/aboutContentData';
 import { resolveImage } from '../data/staticImages';
+import { PageLoader, PageLoadError } from '../components/PageState';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { useAboutContent } from '../hooks/useContentQueries';
 import useSeo from '../hooks/useSeo';
 
 export default function AboutPage() {
   const navigate = useNavigate();
-  const { data: content = aboutContentData } = useAboutContent();
+  const { data: content, isPending, isError, refetch } = useAboutContent();
   const [activeDept, setActiveDept] = useState(1);
   const deptDragStartX = useRef(null);
   const deptDragMoved = useRef(false);
@@ -23,12 +23,14 @@ export default function AboutPage() {
     keywords: 'About Bright Hermosa Realty, BHRI leadership, real estate mission, sustainable development Cavite, real estate Batangas'
   });
 
-  const coreValues = content.coreValues.items;
-  const boardOfDirectors = content.board.members;
-  const offices = content.offices.items;
-  const companyEvents = content.events.items;
-  const reasonsToChoose = content.whyChooseUs.reasons;
-  const departments = content.departments?.items || aboutContentData.departments.items;
+  // Guarded with `?? []` only so the hooks below can run before the content
+  // query resolves; the component returns a loader until `content` exists.
+  const coreValues = content?.coreValues?.items ?? [];
+  const boardOfDirectors = content?.board?.members ?? [];
+  const offices = content?.offices?.items ?? [];
+  const companyEvents = content?.events?.items ?? [];
+  const reasonsToChoose = content?.whyChooseUs?.reasons ?? [];
+  const departments = content?.departments?.items ?? [];
 
   const handleDeptDragStart = (clientX) => {
     deptDragStartX.current = clientX;
@@ -105,6 +107,9 @@ export default function AboutPage() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isEventExpanded, showPrevEvent, showNextEvent]);
+
+  if (isError) return <PageLoadError onRetry={refetch} />;
+  if (isPending || !content) return <PageLoader />;
 
   return (
     <div className="min-h-screen bg-surface text-on-surface font-body-lg antialiased flex flex-col">
@@ -268,10 +273,10 @@ export default function AboutPage() {
           <div className="max-w-7xl mx-auto px-margin-page">
             <div data-reveal className="text-center max-w-2xl mx-auto mb-12 space-y-stack-sm">
               <h2 className="font-display-lg text-display-lg-mobile md:text-display-lg text-primary">
-                {content.departments?.title || 'Company Departments'}
+                {content.departments?.title}
               </h2>
               <p className="font-body-lg text-body-lg text-on-surface-variant">
-                {content.departments?.subtitle || 'Our specialized divisions collaborating to provide seamless land investment, legal compliance, and community development.'}
+                {content.departments?.subtitle}
               </p>
             </div>
 
