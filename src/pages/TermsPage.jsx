@@ -3,9 +3,16 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { termsContentData } from '../data/termsContentData';
 import { useTermsContent } from '../hooks/useContentQueries';
+import useSeo from '../hooks/useSeo';
 
 export default function TermsPage() {
   const { data: content = termsContentData } = useTermsContent();
+
+  useSeo({
+    title: 'Terms of Service',
+    description: 'Terms of Service and conditions for using the Bright Hermosa Realty Inc. (BHRI) website and property services.',
+    keywords: 'Bright Hermosa terms of service, BHRI terms, real estate terms and conditions'
+  });
 
   return (
     <div className="min-h-screen bg-surface text-on-surface font-body-md antialiased flex flex-col">

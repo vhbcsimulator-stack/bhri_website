@@ -6,6 +6,7 @@ import { aboutContentData } from '../data/aboutContentData';
 import { resolveImage } from '../data/staticImages';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { useAboutContent } from '../hooks/useContentQueries';
+import useSeo from '../hooks/useSeo';
 
 export default function AboutPage() {
   const navigate = useNavigate();
@@ -15,6 +16,12 @@ export default function AboutPage() {
   const deptDragMoved = useRef(false);
 
   useScrollReveal([content]);
+
+  useSeo({
+    title: 'About Us',
+    description: content?.hero?.text || 'Learn more about Bright Hermosa Realty Inc. (BHRI), our mission, vision, core values, leadership team, and our commitment to sustainable luxury developments.',
+    keywords: 'About Bright Hermosa Realty, BHRI leadership, real estate mission, sustainable development Cavite, real estate Batangas'
+  });
 
   const coreValues = content.coreValues.items;
   const boardOfDirectors = content.board.members;

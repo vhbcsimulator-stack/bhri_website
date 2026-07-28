@@ -3,9 +3,16 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { cookiesContentData } from '../data/cookiesContentData';
 import { useCookiesContent } from '../hooks/useContentQueries';
+import useSeo from '../hooks/useSeo';
 
 export default function CookiesPage() {
   const { data: content = cookiesContentData } = useCookiesContent();
+
+  useSeo({
+    title: 'Cookie Policy',
+    description: 'Cookie Policy for Bright Hermosa Realty Inc. (BHRI). Learn how we use cookies to improve your user experience on our website.',
+    keywords: 'Bright Hermosa cookie policy, BHRI cookies, website cookie settings'
+  });
 
   return (
     <div className="min-h-screen bg-surface text-on-surface font-body-md antialiased flex flex-col">

@@ -3,9 +3,16 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { privacyContentData } from '../data/privacyContentData';
 import { usePrivacyContent } from '../hooks/useContentQueries';
+import useSeo from '../hooks/useSeo';
 
 export default function PrivacyPage() {
   const { data: content = privacyContentData } = usePrivacyContent();
+
+  useSeo({
+    title: 'Privacy Policy',
+    description: 'Privacy Policy for Bright Hermosa Realty Inc. (BHRI). Learn how we collect, protect, and use your personal information.',
+    keywords: 'Bright Hermosa privacy policy, BHRI privacy, data privacy real estate'
+  });
 
   return (
     <div className="min-h-screen bg-surface text-on-surface font-body-md antialiased flex flex-col">

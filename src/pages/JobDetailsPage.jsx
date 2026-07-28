@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import ApplyModal from '../components/ApplyModal';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { useCareerContent } from '../hooks/useContentQueries';
+import useSeo from '../hooks/useSeo';
 
 export default function JobDetailsPage() {
   const { jobId } = useParams();
@@ -13,6 +14,12 @@ export default function JobDetailsPage() {
   const role = career?.roles.items.find((r) => r.id === jobId);
 
   useScrollReveal([career]);
+
+  useSeo({
+    title: role ? role.title : 'Loading Job Details...',
+    description: role ? `${role.description || role.overview} Apply for the ${role.title} job position located in ${role.location}. Type: ${role.jobType}.` : '',
+    keywords: role ? `${role.title}, ${role.location}, real estate job, ${role.jobCategory}, Bright Hermosa Realty careers` : ''
+  });
 
   if (!isLoading && career && !role) {
     return <Navigate to="/careers" replace />;

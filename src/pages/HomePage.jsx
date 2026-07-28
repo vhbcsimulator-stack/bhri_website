@@ -6,6 +6,7 @@ import { homeContentData } from '../data/homeContentData';
 import { resolveImage } from '../data/staticImages';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { useHomeContent, useProperties } from '../hooks/useContentQueries';
+import useSeo from '../hooks/useSeo';
 
 
 export default function HomePage() {
@@ -17,6 +18,12 @@ export default function HomePage() {
   const { data: content = homeContentData } = useHomeContent();
 
   useScrollReveal([content, properties, loading]);
+
+  useSeo({
+    title: '', // Empty prefix uses default full title "Bright Hermosa Realty Inc. | Premium Real Estate"
+    description: content?.hero?.subtitle || 'Bright Hermosa Realty Inc. (BHRI) is a premier real estate developer offering luxury leisure farm lots and resort communities in Cavite and Batangas.',
+    keywords: 'Bright Hermosa Realty, BHRI, luxury farm communities, leisure farm lots, Cavite properties, Batangas properties, East West Breeze, Mountain View Nasugbu'
+  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
