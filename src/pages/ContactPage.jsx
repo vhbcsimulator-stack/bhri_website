@@ -5,11 +5,18 @@ import { contactContentData } from '../data/contactContentData';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { useContactContent } from '../hooks/useContentQueries';
 import { scrollToId } from '../utils/scrollToSection';
+import useSeo from '../hooks/useSeo';
 
 export default function ContactPage() {
   const { data: content = contactContentData } = useContactContent();
 
   useScrollReveal([content]);
+
+  useSeo({
+    title: 'Contact Us',
+    description: content?.hero?.text || 'Get in touch with Bright Hermosa Realty Inc. (BHRI) for inquiries, site trippings, pricing, and project developments in Cavite and Batangas.',
+    keywords: 'Contact Bright Hermosa Realty, BHRI contact, real estate inquiry, site tripping Cavite, site tripping Batangas'
+  });
 
   const [formData, setFormData] = useState({
     firstName: '',

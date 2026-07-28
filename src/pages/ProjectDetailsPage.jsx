@@ -5,6 +5,7 @@ import GalleryBento from '../components/GalleryBento';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { usePropertyById } from '../hooks/useContentQueries';
 import { scrollToId } from '../utils/scrollToSection';
+import useSeo from '../hooks/useSeo';
 
 export default function ProjectDetailsPage() {
   const { projectId } = useParams();
@@ -17,6 +18,13 @@ export default function ProjectDetailsPage() {
   const touchStartX = React.useRef(null);
 
   useScrollReveal([property, loading]);
+
+  useSeo({
+    title: property ? property.title : 'Loading Property...',
+    description: property ? `${property.description || property.subtitle} Discover luxury leisure lots at ${property.title} located in ${property.locationFull}. ${property.badgeStatus} now.` : '',
+    keywords: property ? `${property.title}, ${property.locationFull}, ${property.typeFull}, farm lot for sale ${property.location}, Bright Hermosa Realty, ${property.id}` : '',
+    image: property?.heroImage
+  });
 
   const openLightbox = (items, index) => setLightbox({ items, index });
   const closeLightbox = () => setLightbox(null);

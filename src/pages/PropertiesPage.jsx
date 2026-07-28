@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { useProperties } from '../hooks/useContentQueries';
+import useSeo from '../hooks/useSeo';
 
 export default function PropertiesPage() {
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -11,6 +12,12 @@ export default function PropertiesPage() {
   const [appliedFilters, setAppliedFilters] = useState({ location: '', type: '' });
 
   const { data: properties = [], isLoading: loading } = useProperties();
+
+  useSeo({
+    title: 'Our Properties',
+    description: 'Explore Bright Hermosa Realty’s premium leisure farm lots and resort communities, including East West Breeze in Cavite and Mountain View in Nasugbu, Batangas.',
+    keywords: 'Bright Hermosa properties, leisure farm lot list, resort estates, real estate listings Cavite, Batangas farm lots'
+  });
 
   const filteredProperties = useMemo(() => {
     let filtered = properties;

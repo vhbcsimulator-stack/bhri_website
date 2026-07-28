@@ -5,11 +5,18 @@ import Footer from '../components/Footer';
 import { careerContentData } from '../data/careerContentData';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { useCareerContent } from '../hooks/useContentQueries';
+import useSeo from '../hooks/useSeo';
 
 export default function CareerPage() {
   const { data: content = careerContentData } = useCareerContent();
 
   useScrollReveal([content]);
+
+  useSeo({
+    title: 'Careers',
+    description: content?.hero?.text || 'Explore job opportunities and build a rewarding career with Bright Hermosa Realty Inc. Join our team as a sales executive, site engineer, or relations officer.',
+    keywords: 'Bright Hermosa careers, real estate jobs Cavite, job openings Batangas, work at BHRI, real estate sales jobs'
+  });
 
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
