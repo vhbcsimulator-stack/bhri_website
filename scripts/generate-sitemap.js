@@ -1,8 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { propertiesData } from '../src/data/propertiesData.js';
-import { careerContentData } from '../src/data/careerContentData.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,49 +37,54 @@ if (!fs.existsSync(publicDir)) {
   fs.mkdirSync(publicDir, { recursive: true });
 }
 
-// 2. Fetch properties from Supabase REST API or fallback to static propertiesData
-const fetchProperties = async () => {
-  const supabaseUrl = process.env.VITE_SUPABASE_URL;
-  const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
+// 2. Read everything from Supabase. There is no static fallback: emitting a
+// sitemap built from stale bundled data would publish wrong URLs, so a failed
+// fetch fails the build instead.
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
 
-  if (supabaseUrl && supabaseAnonKey) {
-    try {
-      console.log('Attempting to fetch live properties from Supabase database...');
-      const res = await fetch(`${supabaseUrl}/rest/v1/properties?select=id,updated_at&order=created_at.asc`, {
-        headers: {
-          'apikey': supabaseAnonKey,
-          'Authorization': `Bearer ${supabaseAnonKey}`
-        }
-      });
-      if (res.ok) {
-        const dbData = await res.json();
-        if (dbData && dbData.length > 0) {
-          console.log(`Fetched ${dbData.length} active properties from Supabase.`);
-          return dbData.map(p => ({
-            id: p.id,
-            updatedAt: p.updated_at ? p.updated_at.split('T')[0] : new Date().toISOString().split('T')[0]
-          }));
-        }
-      } else {
-        console.warn(`Supabase REST fetch returned status ${res.status}. Falling back to local properties data.`);
-      }
-    } catch (err) {
-      console.warn(`Could not connect to Supabase database: ${err.message}. Falling back to local properties data.`);
-    }
-  } else {
-    console.log('No Supabase credentials found in .env. Using static local properties data.');
+const supabaseGet = async (query) => {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are required to generate the sitemaps.');
   }
 
-  // Fallback to static data
-  return propertiesData.map(p => ({
+  const res = await fetch(`${supabaseUrl}/rest/v1/${query}`, {
+    headers: {
+      'apikey': supabaseAnonKey,
+      'Authorization': `Bearer ${supabaseAnonKey}`
+    }
+  });
+
+  if (!res.ok) {
+    throw new Error(`Supabase request "${query}" failed with status ${res.status}: ${await res.text()}`);
+  }
+
+  return res.json();
+};
+
+const fetchProperties = async () => {
+  console.log('Fetching live properties from Supabase database...');
+  const rows = await supabaseGet('properties?select=id,updated_at&order=created_at.asc');
+  console.log(`Fetched ${rows.length} active properties from Supabase.`);
+
+  return rows.map(p => ({
     id: p.id,
-    updatedAt: new Date().toISOString().split('T')[0]
+    updatedAt: p.updated_at ? p.updated_at.split('T')[0] : new Date().toISOString().split('T')[0]
   }));
+};
+
+const fetchCareerRoles = async () => {
+  console.log('Fetching live career roles from Supabase database...');
+  const rows = await supabaseGet('site_content?select=content&id=eq.career');
+  const roles = rows[0]?.content?.roles?.items ?? [];
+  console.log(`Fetched ${roles.length} career roles from Supabase.`);
+
+  return roles;
 };
 
 const main = async () => {
   const currentDate = new Date().toISOString().split('T')[0];
-  const properties = await fetchProperties();
+  const [properties, roles] = await Promise.all([fetchProperties(), fetchCareerRoles()]);
 
   // A. Generate sitemap_index.xml
   const sitemapIndexXml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -144,7 +147,6 @@ ${properties.map(p => `  <url>
   console.log('Created: public/sitemap-properties.xml');
 
   // D. Generate sitemap-careers.xml
-  const roles = careerContentData.roles.items || [];
   const sitemapCareersXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${roles.map(role => `  <url>
