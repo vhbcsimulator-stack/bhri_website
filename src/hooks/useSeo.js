@@ -45,6 +45,7 @@ export default function useSeo({ title, description, keywords, image, url }) {
     
     const currentUrl = url || window.location.href;
     updateMetaTag('property', 'og:url', currentUrl);
+    updateMetaTag('property', 'og:site_name', 'Bright Hermosa Realty');
     
     // 4. Set Canonical Link Tag
     let canonical = document.querySelector('link[rel="canonical"]');
