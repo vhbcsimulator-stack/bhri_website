@@ -12,6 +12,7 @@ import TermsPage from './pages/TermsPage';
 import CookiesPage from './pages/CookiesPage';
 import SitemapPage from './pages/SitemapPage';
 import { scrollToIdWhenReady } from './utils/scrollToSection';
+import { FloatingBackToTopButton } from './components/FloatingBackToTopButton';
 
 // UX Helper to handle scrolling behavior on route changes and hash navigation
 function ScrollToTop() {
@@ -49,6 +50,7 @@ function App() {
         <Route path="/sitemap" element={<SitemapPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <FloatingBackToTopButton />
     </BrowserRouter>
   );
 }

@@ -4,7 +4,6 @@ import Footer from '../components/Footer';
 import { PageLoader, PageLoadError } from '../components/PageState';
 import useScrollReveal from '../hooks/useScrollReveal';
 import { useContactContent } from '../hooks/useContentQueries';
-import { scrollToId } from '../utils/scrollToSection';
 import useSeo from '../hooks/useSeo';
 
 export default function ContactPage() {
@@ -63,7 +62,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-surface text-on-surface font-body-md antialiased flex flex-col">
-      <Navbar onOpenModal={() => scrollToId('inquiry-form')} />
+      <Navbar />
 
       <main className="w-full flex-grow">
         {/* Hero Section */}

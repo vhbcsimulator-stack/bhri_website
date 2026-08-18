@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { resolveImage } from '../data/staticImages';
@@ -9,7 +8,6 @@ import { useAboutContent } from '../hooks/useContentQueries';
 import useSeo from '../hooks/useSeo';
 
 export default function AboutPage() {
-  const navigate = useNavigate();
   const { data: content, isPending, isError, refetch } = useAboutContent();
   const [activeDept, setActiveDept] = useState(1);
   const deptDragStartX = useRef(null);
@@ -113,7 +111,7 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-surface text-on-surface font-body-lg antialiased flex flex-col">
-      <Navbar onOpenModal={() => navigate('/contact')} />
+      <Navbar />
 
       <main className="flex-grow">
         {/* About Us */}

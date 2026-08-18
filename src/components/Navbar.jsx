@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import MessageModal from './MessageModal';
 
 export default function Navbar({ onOpenModal }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [messageOpen, setMessageOpen] = useState(false);
   const location = useLocation();
   const currentPath = location.pathname;
 
   const isActive = (path) => currentPath === path;
+
+  // The contact page already is the inquiry form, so the CTA is redundant there.
+  const showMessageButton = currentPath !== '/contact';
+
+  // Pages can override the action (e.g. scroll to their own form); otherwise
+  // the navbar opens the shared modal itself.
+  const openMessage = () => (onOpenModal ? onOpenModal() : setMessageOpen(true));
 
 
 
@@ -41,12 +50,14 @@ export default function Navbar({ onOpenModal }) {
         </div>
 
         <div className="flex items-center gap-4">
-          <button 
-            onClick={() => onOpenModal && onOpenModal()}
-            className="hidden md:block bg-primary text-on-primary px-6 py-3 rounded-lg font-subhead-lg hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm cursor-pointer"
-          >
-            Message Us
-          </button>
+          {showMessageButton && (
+            <button
+              onClick={openMessage}
+              className="hidden md:block bg-primary text-on-primary px-6 py-3 rounded-lg font-subhead-lg hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm cursor-pointer"
+            >
+              Message Us
+            </button>
+          )}
           <button 
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden text-primary p-2 focus:outline-none"
@@ -91,17 +102,21 @@ export default function Navbar({ onOpenModal }) {
             Contact Us
           </Link>
           
-          <button 
-            onClick={() => {
-              setMobileMenuOpen(false);
-              onOpenModal && onOpenModal();
-            }}
-            className="bg-primary text-on-primary w-full py-3 rounded-lg font-subhead-lg hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm mt-2"
-          >
-            Message Us
-          </button>
+          {showMessageButton && (
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                openMessage();
+              }}
+              className="bg-primary text-on-primary w-full py-3 rounded-lg font-subhead-lg hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm mt-2 cursor-pointer"
+            >
+              Message Us
+            </button>
+          )}
         </div>
       )}
+
+      {messageOpen && <MessageModal onClose={() => setMessageOpen(false)} />}
     </nav>
   );
 }
