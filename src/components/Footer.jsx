@@ -24,6 +24,7 @@ export default function Footer() {
             <li><Link className="font-body-md text-on-primary-container hover:text-secondary-fixed transition-colors duration-200" to="/">Home</Link></li>
             <li><Link className="font-body-md text-on-primary-container hover:text-secondary-fixed transition-colors duration-200" to="/about">About Us</Link></li>
             <li><Link className="font-body-md text-on-primary-container hover:text-secondary-fixed transition-colors duration-200" to="/#properties">Properties</Link></li>
+            <li><Link className="font-body-md text-on-primary-container hover:text-secondary-fixed transition-colors duration-200" to="/blogs">Blogs & News</Link></li>
           </ul>
         </div>
         

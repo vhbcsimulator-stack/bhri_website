@@ -111,6 +111,7 @@ const main = async () => {
     { path: '', changefreq: 'weekly', priority: '1.0' },
     { path: '/about', changefreq: 'monthly', priority: '0.8' },
     { path: '/properties', changefreq: 'weekly', priority: '0.9' },
+    { path: '/blogs', changefreq: 'weekly', priority: '0.8' },
     { path: '/careers', changefreq: 'monthly', priority: '0.7' },
     { path: '/contact', changefreq: 'monthly', priority: '0.8' },
     { path: '/privacy', changefreq: 'yearly', priority: '0.3' },

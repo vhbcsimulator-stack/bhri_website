@@ -11,6 +11,7 @@ import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import CookiesPage from './pages/CookiesPage';
 import SitemapPage from './pages/SitemapPage';
+import BlogsPage from './pages/BlogsPage';
 import { scrollToIdWhenReady } from './utils/scrollToSection';
 import { FloatingBackToTopButton } from './components/FloatingBackToTopButton';
 
@@ -48,6 +49,8 @@ function App() {
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/cookies" element={<CookiesPage />} />
         <Route path="/sitemap" element={<SitemapPage />} />
+        <Route path="/blogs" element={<BlogsPage />} />
+        <Route path="/news" element={<Navigate to="/blogs" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <FloatingBackToTopButton />
