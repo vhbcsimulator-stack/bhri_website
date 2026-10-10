@@ -32,9 +32,11 @@ export default function GalleryBento({ items, wideFourth = false, onOpen, initia
             >
               <img
                 alt={item.title}
+                title={item.title}
                 className="w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
                 src={item.image}
                 loading="lazy"
+                decoding="async"
               />
 
               {/* Base + hover gradient wash */}

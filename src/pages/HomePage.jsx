@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -22,7 +22,38 @@ export default function HomePage() {
   useSeo({
     title: '', // Empty prefix uses default full title "Bright Hermosa Realty Inc. | Premium Real Estate"
     description: content?.hero?.subtitle || 'Bright Hermosa Realty Inc. (BHRI) is a premier real estate developer offering luxury leisure farm lots and resort communities in Cavite and Batangas.',
-    keywords: 'Bright Hermosa Realty, BHRI, luxury farm communities, leisure farm lots, Cavite properties, Batangas properties, East West Breeze, Mountain View Nasugbu'
+    keywords: 'Bright Hermosa Realty, BHRI, luxury farm communities, leisure farm lots Cavite, Batangas properties, East West Breeze Leisure Farm, Mountain View Nasugbu, Hernando B. Signo, Atty. Adrian Carlo Uy Escay, Richard Mapusao, real estate developer Philippines',
+    image: resolveImage(content?.hero),
+    structuredData: {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'RealEstateAgent',
+          '@id': 'https://bhri.com.ph/#organization',
+          'name': 'Bright Hermosa Realty Inc.',
+          'alternateName': ['BHRI', 'Bright Hermosa Realty'],
+          'url': 'https://bhri.com.ph',
+          'logo': 'https://bhri.com.ph/favicon.png',
+          'image': 'https://bhri.com.ph/favicon.png',
+          'description': 'Premier real estate developer in the Philippines offering luxury leisure farm communities and mountain view properties in Cavite and Batangas.',
+          'priceRange': '₱₱₱',
+          'address': {
+            '@type': 'PostalAddress',
+            'streetAddress': 'East West Breeze Leisure Farm, Daine 1',
+            'addressLocality': 'Indang',
+            'addressRegion': 'Cavite',
+            'addressCountry': 'PH'
+          }
+        },
+        {
+          '@type': 'WebSite',
+          '@id': 'https://bhri.com.ph/#website',
+          'url': 'https://bhri.com.ph',
+          'name': 'Bright Hermosa Realty Inc.',
+          'publisher': { '@id': 'https://bhri.com.ph/#organization' }
+        }
+      ]
+    }
   });
 
   if (isError) return <PageLoadError onRetry={refetch} />;
@@ -114,7 +145,10 @@ export default function HomePage() {
                     <img 
                       className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
                       src={property.cardImage} 
-                      alt={property.title} 
+                      alt={`${property.title} - Luxury Leisure Community in Cavite & Batangas | Bright Hermosa Realty`} 
+                      title={property.title}
+                      loading="lazy"
+                      decoding="async"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-deep-emerald/20 to-transparent"></div>
                     <div className="absolute bottom-0 left-0 p-6 text-on-primary w-full">
@@ -173,7 +207,10 @@ export default function HomePage() {
                 <img
                   className="w-full h-full object-cover"
                   src={content.whyChooseUs.image}
-                  alt="Modern Luxury Interior"
+                  alt="Bright Hermosa Realty Inc. sustainable modern architecture and luxury leisure farm communities"
+                  title="Bright Hermosa Realty Architecture"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-primary/10"></div>
               </div>

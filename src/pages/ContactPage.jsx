@@ -12,9 +12,28 @@ export default function ContactPage() {
   useScrollReveal([content]);
 
   useSeo({
-    title: 'Contact Us',
-    description: content?.hero?.text || 'Get in touch with Bright Hermosa Realty Inc. (BHRI) for inquiries, site trippings, pricing, and project developments in Cavite and Batangas.',
-    keywords: 'Contact Bright Hermosa Realty, BHRI contact, real estate inquiry, site tripping Cavite, site tripping Batangas'
+    title: 'Contact Us | Inquire & Schedule Site Tripping',
+    description: content?.hero?.text || 'Get in touch with Bright Hermosa Realty Inc. (BHRI) for inquiries, site trippings, pricing, and project developments in Cavite and Batangas. Connect with our dedicated sales and support team.',
+    keywords: 'Contact Bright Hermosa Realty, BHRI contact, real estate inquiry, site tripping Cavite, site tripping Batangas, East West Breeze office, Royale Tagaytay office, farm lots inquiry Philippines',
+    structuredData: {
+      '@context': 'https://schema.org',
+      '@type': 'ContactPage',
+      'name': 'Contact Bright Hermosa Realty Inc.',
+      'description': 'Contact information, office locations, and property inquiry submission for Bright Hermosa Realty Inc.',
+      'mainEntity': {
+        '@type': 'RealEstateAgent',
+        'name': 'Bright Hermosa Realty Inc.',
+        'url': 'https://bhri.com.ph',
+        'logo': 'https://bhri.com.ph/favicon.png',
+        'address': {
+          '@type': 'PostalAddress',
+          'streetAddress': 'VHBC Office, Royale Tagaytay Estates Alfonso Rd.',
+          'addressLocality': 'Alfonso',
+          'addressRegion': 'Cavite',
+          'addressCountry': 'PH'
+        }
+      }
+    }
   });
 
   const [formData, setFormData] = useState({

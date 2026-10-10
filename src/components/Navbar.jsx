@@ -37,8 +37,11 @@ export default function Navbar({ onOpenModal }) {
         <Link className="font-headline-md text-headline-md font-bold text-primary flex items-center gap-2" to="/">
           <img 
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTojLhFLUZDV1OSo4DJrSjAE4z5BcbscWu3FCQNoIXOQXtB5wRmDF_RZGAGWkFK8TdbYs6dwute_Sb-wOqI9_wihyICja8m-lIC-Hh06kSBWxE9G0_oxbmOCn07VH6TyyYtlM1pXbPgpbziJLGoIfbgyw2wsrrd9DAvUTVvCkU9MCdOzLAtFFpismYXRHUEkO8Y9pvMk_WMgRdNbP9R6nXqw3VNsmR-Qy-0iRVxLL4DTTsZT9re8dSkB1vxWNqRiVS63oOw-ZWo-s" 
-            alt="Bright Hermosa Logo" 
+            alt="Bright Hermosa Realty Inc. Logo" 
+            title="Bright Hermosa Realty Inc."
             className="h-12 w-auto object-contain bg-transparent"
+            loading="eager"
+            decoding="async"
           />
         </Link>
         

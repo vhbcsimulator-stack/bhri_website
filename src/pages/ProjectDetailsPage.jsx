@@ -21,10 +21,30 @@ export default function ProjectDetailsPage() {
   useScrollReveal([property, loading]);
 
   useSeo({
-    title: property ? property.title : 'Loading Property...',
-    description: property ? `${property.description || property.subtitle} Discover luxury leisure lots at ${property.title} located in ${property.locationFull}. ${property.badgeStatus} now.` : '',
-    keywords: property ? `${property.title}, ${property.locationFull}, ${property.typeFull}, farm lot for sale ${property.location}, Bright Hermosa Realty, ${property.id}` : '',
-    image: property?.heroImage
+    title: property ? `${property.title} | Leisure Farm Community in ${property.location}` : 'Property Details',
+    description: property ? `${property.description || property.subtitle} Discover luxury leisure lots at ${property.title} located in ${property.locationFull}. ${property.badgeStatus} now. Inquire with Bright Hermosa Realty Inc.` : '',
+    keywords: property ? `${property.title}, ${property.locationFull}, ${property.typeFull}, farm lot for sale ${property.location}, Bright Hermosa Realty, ${property.id}, leisure community Cavite Batangas` : '',
+    image: property?.heroImage,
+    type: 'place',
+    structuredData: property ? {
+      '@context': 'https://schema.org',
+      '@type': 'RealEstateListing',
+      'name': property.title,
+      'description': property.description || property.subtitle,
+      'image': property.heroImage,
+      'url': typeof window !== 'undefined' ? window.location.href : `https://bhri.com.ph/properties/${property.id}`,
+      'address': {
+        '@type': 'PostalAddress',
+        'addressLocality': property.location,
+        'addressRegion': property.locationFull,
+        'addressCountry': 'PH'
+      },
+      'offers': {
+        '@type': 'Offer',
+        'availability': 'https://schema.org/InStock',
+        'priceCurrency': 'PHP'
+      }
+    } : undefined
   });
 
   const openLightbox = (items, index) => setLightbox({ items, index });
@@ -185,9 +205,12 @@ export default function ProjectDetailsPage() {
         <section className="relative h-[85vh] min-h-[550px] flex items-center overflow-hidden">
           <div className="absolute inset-0 z-0">
             <img 
-              alt={property.title} 
+              alt={`${property.title} - ${property.intro?.tag || 'Leisure Farm Community'} in ${property.location} | Bright Hermosa Realty`} 
+              title={property.title}
               className="w-full h-full object-cover brightness-[0.8]" 
               src={property.heroImage}
+              loading="eager"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-deep-emerald/70 via-black/20 to-transparent"></div>
           </div>
@@ -412,24 +435,36 @@ export default function ProjectDetailsPage() {
                   <img 
                     className="rounded-xl w-full aspect-square object-cover shadow-xl hover:scale-[1.02] transition-transform duration-300" 
                     src={property.investment.images[0]} 
-                    alt="Planned Perimeters"
+                    alt={`${property.title} Planned Perimeter & Community Security - Bright Hermosa Realty`}
+                    title={`${property.title} Security and Perimeters`}
+                    loading="lazy"
+                    decoding="async"
                   />
                   <img 
                     className="rounded-xl w-full aspect-[3/4] object-cover shadow-xl hover:scale-[1.02] transition-transform duration-300" 
                     src={property.investment.images[1]} 
-                    alt="Scenic deck trippings"
+                    alt={`${property.title} Scenic Deck & Panoramic Viewpoints - Bright Hermosa Realty`}
+                    title={`${property.title} Scenic Viewpoints`}
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
                 <div className="space-y-4 pt-12">
                   <img 
                     className="rounded-xl w-full aspect-[3/4] object-cover shadow-xl hover:scale-[1.02] transition-transform duration-300" 
                     src={property.investment.images[2]} 
-                    alt="Stone and wood detailings"
+                    alt={`${property.title} Architectural Stone & Wood Craftsmanship - Bright Hermosa Realty`}
+                    title={`${property.title} Architecture`}
+                    loading="lazy"
+                    decoding="async"
                   />
                   <img 
                     className="rounded-xl w-full aspect-square object-cover shadow-xl hover:scale-[1.02] transition-transform duration-300" 
                     src={property.investment.images[3]} 
-                    alt="Lush plant features"
+                    alt={`${property.title} Lush Landscaping & Farm Estate Amenities - Bright Hermosa Realty`}
+                    title={`${property.title} Farm Amenities`}
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
               </div>
@@ -635,7 +670,14 @@ export default function ProjectDetailsPage() {
                     }`}
                     aria-label={`View image ${idx + 1}`}
                   >
-                    <img src={item.image} alt="" className="w-full h-full object-cover" />
+                    <img 
+                      src={item.image} 
+                      alt={item.title || `${property?.title} Photo ${idx + 1}`} 
+                      title={item.title || `${property?.title} Photo ${idx + 1}`}
+                      className="w-full h-full object-cover" 
+                      loading="lazy" 
+                      decoding="async" 
+                    />
                   </button>
                 ))}
               </div>
@@ -658,6 +700,8 @@ function LightboxImage({ src, alt }) {
       <img
         src={src}
         alt={alt}
+        title={alt}
+        decoding="async"
         onLoad={() => setLoaded(true)}
         className={`max-w-full max-h-[70vh] object-contain rounded-xl shadow-2xl transition-opacity duration-500 ease-out animate-scaleUp ${loaded ? 'opacity-100' : 'opacity-0'}`}
       />

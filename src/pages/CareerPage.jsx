@@ -13,9 +13,21 @@ export default function CareerPage() {
   useScrollReveal([content]);
 
   useSeo({
-    title: 'Careers',
-    description: content?.hero?.text || 'Explore job opportunities and build a rewarding career with Bright Hermosa Realty Inc. Join our team as a sales executive, site engineer, or relations officer.',
-    keywords: 'Bright Hermosa careers, real estate jobs Cavite, job openings Batangas, work at BHRI, real estate sales jobs'
+    title: 'Careers & Job Opportunities',
+    description: content?.hero?.text || 'Explore job opportunities and build a rewarding career with Bright Hermosa Realty Inc. Join our team as a sales executive, site engineer, or relations officer in Cavite and Batangas.',
+    keywords: 'Bright Hermosa careers, real estate jobs Cavite, job openings Batangas, work at BHRI, real estate sales jobs, property consultant hiring Philippines',
+    image: content?.hero?.image,
+    structuredData: {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': 'Careers at Bright Hermosa Realty Inc.',
+      'description': 'Explore career opportunities with Bright Hermosa Realty Inc. in Cavite and Batangas.',
+      'publisher': {
+        '@type': 'Organization',
+        'name': 'Bright Hermosa Realty Inc.',
+        'url': 'https://bhri.com.ph'
+      }
+    }
   });
 
   const [search, setSearch] = useState('');
@@ -62,8 +74,10 @@ export default function CareerPage() {
           <img
             className="absolute inset-0 w-full h-full object-cover"
             src={content.hero.image}
-            alt=""
-            aria-hidden="true"
+            alt="Careers at Bright Hermosa Realty Inc. - Team and Real Estate Opportunities"
+            title="Bright Hermosa Realty Careers"
+            loading="eager"
+            decoding="async"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-deep-emerald/90 via-deep-emerald/75 to-deep-emerald/40"></div>
           <div className="max-w-7xl mx-auto px-margin-page relative z-10">

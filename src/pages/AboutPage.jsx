@@ -15,12 +15,6 @@ export default function AboutPage() {
 
   useScrollReveal([content]);
 
-  useSeo({
-    title: 'About Us',
-    description: content?.hero?.text || 'Learn more about Bright Hermosa Realty Inc. (BHRI), our mission, vision, core values, leadership team, and our commitment to sustainable luxury developments.',
-    keywords: 'About Bright Hermosa Realty, BHRI leadership, real estate mission, sustainable development Cavite, real estate Batangas'
-  });
-
   // Guarded with `?? []` only so the hooks below can run before the content
   // query resolves; the component returns a loader until `content` exists.
   const coreValues = content?.coreValues?.items ?? [];
@@ -29,6 +23,62 @@ export default function AboutPage() {
   const companyEvents = content?.events?.items ?? [];
   const reasonsToChoose = content?.whyChooseUs?.reasons ?? [];
   const departments = content?.departments?.items ?? [];
+
+  // Generate Person schemas for leadership to boost Google Knowledge Graph and Search Engine Rankings
+  const directorsStructuredData = boardOfDirectors.map((m) => {
+    const rawImg = resolveImage(m);
+    const absoluteImg = rawImg && rawImg.startsWith('http')
+      ? rawImg
+      : (typeof window !== 'undefined' && rawImg ? `${window.location.origin}${rawImg}` : rawImg);
+    return {
+      '@type': 'Person',
+      'name': m.name,
+      'jobTitle': m.position,
+      'description': m.desc,
+      'image': absoluteImg || undefined,
+      'worksFor': {
+        '@type': 'Organization',
+        'name': 'Bright Hermosa Realty Inc.',
+        'url': 'https://bhri.com.ph'
+      }
+    };
+  });
+
+  useSeo({
+    title: 'About Us | Leadership & Board of Directors',
+    description: 'Learn about Bright Hermosa Realty Inc. (BHRI) and our leadership team led by Chairman Hernando B. Signo, President & CEO Atty. Adrian Carlo Uy Escay, and Vice President Richard Mapusao. Discover our sustainable luxury farm communities in Cavite and Batangas.',
+    keywords: 'Hernando B. Signo, Hernando Signo, Atty. Adrian Carlo Uy Escay, Adrian Carlo Escay, Adrian Escay, Richard Mapusao, Bright Hermosa Realty Board of Directors, BHRI Chairman, BHRI President, BHRI leadership, Bright Hermosa Realty executives, Cavite Batangas real estate leaders',
+    image: resolveImage(boardOfDirectors[1]) || resolveImage(content?.aboutIntro),
+    structuredData: {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'AboutPage',
+          '@id': 'https://bhri.com.ph/about#webpage',
+          'url': 'https://bhri.com.ph/about',
+          'name': 'About Us & Board of Directors | Bright Hermosa Realty Inc.',
+          'description': 'Meet the leadership and Board of Directors of Bright Hermosa Realty Inc. driving sustainable leisure farm developments.',
+          'publisher': {
+            '@type': 'Organization',
+            'name': 'Bright Hermosa Realty Inc.',
+            'url': 'https://bhri.com.ph',
+            'logo': 'https://bhri.com.ph/favicon.png'
+          }
+        },
+        {
+          '@type': 'Organization',
+          '@id': 'https://bhri.com.ph/#organization',
+          'name': 'Bright Hermosa Realty Inc.',
+          'alternateName': ['BHRI', 'Bright Hermosa Realty'],
+          'url': 'https://bhri.com.ph',
+          'logo': 'https://bhri.com.ph/favicon.png',
+          'founder': directorsStructuredData[0] || undefined,
+          'employee': directorsStructuredData
+        },
+        ...directorsStructuredData
+      ]
+    }
+  });
 
   const handleDeptDragStart = (clientX) => {
     deptDragStartX.current = clientX;
@@ -128,9 +178,12 @@ export default function AboutPage() {
           </div>
           <div data-reveal="right" className="w-full md:w-1/2 overflow-hidden rounded-xl">
             <img
-              className="w-full h-auto rounded-xl object-cover shadow-sm border border-outline-variant/30 hover:scale-105 duration-300 ease-in-out  "
+              className="w-full h-auto rounded-xl object-cover shadow-sm border border-outline-variant/30 hover:scale-105 duration-300 ease-in-out"
               src={content.aboutIntro.image}
-              alt="Bright Hermosa Realty Inc. office and team"
+              alt="Bright Hermosa Realty Inc. Corporate Headquarters and Development Team in Cavite"
+              title="Bright Hermosa Realty Inc. Headquarters and Team"
+              loading="lazy"
+              decoding="async"
             />
           </div>
         </section>
@@ -146,9 +199,12 @@ export default function AboutPage() {
           </div>
           <div data-reveal="left" className="w-full md:w-1/2 overflow-hidden rounded-xl">
             <img
-              className="w-full h-auto rounded-xl object-cover shadow-sm border border-outline-variant/30 hover:scale-105 duration-300 ease-in-out  "
+              className="w-full h-auto rounded-xl object-cover shadow-sm border border-outline-variant/30 hover:scale-105 duration-300 ease-in-out"
               src={content.hero.image}
-              alt="Lush green valley in the Philippines at sunrise"
+              alt="Bright Hermosa Luxury Leisure Farm Communities in Cavite and Batangas"
+              title="Bright Hermosa Realty Scenic Landscape"
+              loading="eager"
+              decoding="async"
             />
           </div>
         </section>
@@ -198,7 +254,10 @@ export default function AboutPage() {
               <img
                 className="relative w-full h-auto rounded-xl object-cover border border-outline-variant z-10 shadow-sm hover:scale-105 duration-300 ease-in-out"
                 src={content.coreNarrative.image}
-                alt="Atty. Adrian Escay, CEO of Bright Hermosa"
+                alt="Atty. Adrian Carlo Uy Escay, President and CEO of Bright Hermosa Realty Inc."
+                title="Atty. Adrian Carlo Uy Escay - President & CEO"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
@@ -221,7 +280,10 @@ export default function AboutPage() {
               <img
                 className="w-full h-auto rounded-xl object-cover shadow-sm border border-outline-variant/30 hover:scale-105 duration-300 ease-in-out"
                 src={content.coreCommitment.image}
-                alt="Professional real estate agent shaking hands with client couple"
+                alt="Bright Hermosa Realty professional real estate consultation and client partnership"
+                title="Bright Hermosa Realty Client Commitment"
+                loading="lazy"
+                decoding="async"
               />
             </div>
           </div>
@@ -237,30 +299,40 @@ export default function AboutPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-gutter">
               {boardOfDirectors.map((member, index) => (
-                <div
+                <article
                   key={index}
+                  itemScope
+                  itemType="https://schema.org/Person"
                   data-reveal
                   style={{ '--reveal-delay': `${index * 120}ms` }}
                   className="group bg-surface border border-outline-variant rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/40 transition-all duration-300 ease-in-out"
                 >
+                  <meta itemProp="name" content={member.name} />
+                  <meta itemProp="jobTitle" content={member.position} />
+                  <meta itemProp="worksFor" content="Bright Hermosa Realty Inc." />
+                  <meta itemProp="description" content={member.desc} />
+                  <meta itemProp="url" content="https://bhri.com.ph/about" />
+
                   <div className="relative w-full h-80 overflow-hidden bg-gradient-to-b from-primary/10 via-primary/5 to-surface-container-low">
-                    {/* Arch backdrop behind the portrait */}
-                    
                     {/* Soft floor shadow under the cutout */}
                     <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1/2 h-5 bg-primary/30 rounded-full blur-lg transition-all duration-500 group-hover:w-3/5 group-hover:bg-primary/40"></div>
                     <img
+                      itemProp="image"
                       className="absolute inset-0 h-full w-full object-contain object-bottom px-6 pt-6 drop-shadow-[0_16px_24px_rgba(0,0,0,0.28)] transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                       src={resolveImage(member)}
-                      alt={`${member.name}, ${member.position}`}
+                      alt={member.name}
+                      title={`${member.name} - ${member.position} | Bright Hermosa Realty Inc.`}
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div className="relative p-6 pt-5 space-y-2 border-t border-outline-variant/40">
                     <span className="block w-10 h-0.5 rounded-full bg-secondary transition-all duration-500 ease-out group-hover:w-16"></span>
-                    <h3 className="font-subhead-lg text-subhead-lg text-primary">{member.name}</h3>
-                    <p className="font-label-caps text-label-caps text-secondary uppercase tracking-wide">{member.position}</p>
-                    <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed pt-1">{member.desc}</p>
+                    <h3 itemProp="name" className="font-subhead-lg text-subhead-lg text-primary">{member.name}</h3>
+                    <p itemProp="jobTitle" className="font-label-caps text-label-caps text-secondary uppercase tracking-wide">{member.position}</p>
+                    <p itemProp="description" className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed pt-1">{member.desc}</p>
                   </div>
-                </div>
+                </article>
               ))}
             </div>
           </div>
@@ -351,7 +423,10 @@ export default function AboutPage() {
                       <img
                         className="w-full h-full object-cover select-none pointer-events-none transition-transform duration-700 ease-in-out"
                         src={dept.image}
-                        alt={dept.name}
+                        alt={`${dept.name} Department - Bright Hermosa Realty Inc.`}
+                        title={`${dept.name} - Bright Hermosa Realty`}
+                        loading="lazy"
+                        decoding="async"
                       />
 
                       {/* Smooth text overlay */}
@@ -396,7 +471,10 @@ export default function AboutPage() {
                   <img
                     className="w-full h-full object-cover transition-transform duration-500 ease-in-out"
                     src={resolveImage(office)}
-                    alt={`${office.name} building`}
+                    alt={`${office.name} Office - Bright Hermosa Realty Inc., ${office.address}`}
+                    title={`${office.name} - Bright Hermosa Realty`}
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
 
@@ -476,7 +554,10 @@ export default function AboutPage() {
                     <img
                       className={`relative w-full h-full transition-transform duration-500 ease-in-out ${isContained ? 'object-contain sm:object-cover' : 'object-cover group-hover:scale-110 '}`}
                       src={resolveImage(event)}
-                      alt={event.title || `Company event ${index + 1}`}
+                      alt={event.title || `Bright Hermosa Realty Company Milestone Event ${index + 1}`}
+                      title={event.title || `Bright Hermosa Realty Event ${index + 1}`}
+                      loading="lazy"
+                      decoding="async"
                     />
                   </button>
                 );

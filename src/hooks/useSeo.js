@@ -40,25 +40,37 @@ export default function useSeo({ title, description, keywords, image, url, type 
     // 2. Set Meta Description & Keywords
     updateMetaTag('name', 'description', effectiveDesc);
     updateMetaTag('name', 'keywords', effectiveKeywords);
+    updateMetaTag('name', 'author', 'Bright Hermosa Realty Inc.');
+
+    // Directives to ensure search engines index images in highest resolution and rank pages prominently
+    updateMetaTag('name', 'robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+    updateMetaTag('name', 'googlebot', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
     
+    // Geographic metadata for local Philippine & international real estate search engines
+    updateMetaTag('name', 'geo.region', 'PH-CAV');
+    updateMetaTag('name', 'geo.placename', 'Cavite, Batangas, Philippines');
+
     // 3. Set Open Graph (Social Media Cards) Tags
     updateMetaTag('property', 'og:type', type);
-    updateMetaTag('property', 'og:title', title ? `${title} | ${siteTitle}` : siteTitle);
+    updateMetaTag('property', 'og:title', title ? `${title} | ${siteTitle}` : `${siteTitle} | Premium Real Estate`);
     updateMetaTag('property', 'og:description', effectiveDesc);
     if (image) {
       updateMetaTag('property', 'og:image', image);
+      updateMetaTag('property', 'og:image:alt', title || siteTitle);
     }
     
     const currentUrl = url || window.location.href;
     updateMetaTag('property', 'og:url', currentUrl);
     updateMetaTag('property', 'og:site_name', 'Bright Hermosa Realty');
+    updateMetaTag('property', 'og:locale', 'en_PH');
     
     // 4. Set Twitter Card Tags
     updateMetaTag('name', 'twitter:card', 'summary_large_image');
-    updateMetaTag('name', 'twitter:title', title ? `${title} | ${siteTitle}` : siteTitle);
+    updateMetaTag('name', 'twitter:title', title ? `${title} | ${siteTitle}` : `${siteTitle} | Premium Real Estate`);
     updateMetaTag('name', 'twitter:description', effectiveDesc);
     if (image) {
       updateMetaTag('name', 'twitter:image', image);
+      updateMetaTag('name', 'twitter:image:alt', title || siteTitle);
     }
 
     // 5. Set Canonical Link Tag

@@ -15,9 +15,26 @@ export default function PropertiesPage() {
   const { data: properties = [], isLoading: loading, isError, refetch } = useProperties();
 
   useSeo({
-    title: 'Our Properties',
-    description: 'Explore Bright Hermosa Realty’s premium leisure farm lots and resort communities, including East West Breeze in Cavite and Mountain View in Nasugbu, Batangas.',
-    keywords: 'Bright Hermosa properties, leisure farm lot list, resort estates, real estate listings Cavite, Batangas farm lots'
+    title: 'Our Properties | Leisure Communities',
+    description: 'Explore Bright Hermosa Realty’s premium leisure farm lots and resort communities, including East West Breeze in Cavite and Mountain View in Nasugbu, Batangas. Sustainable farm lots with clubhouse amenities.',
+    keywords: 'Bright Hermosa properties, leisure farm lot list, resort estates, real estate listings Cavite, Batangas farm lots, East West Breeze Leisure Farm, Mountain View Nasugbu, farm lot for sale Cavite, leisure community Philippines',
+    structuredData: {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      'name': 'Bright Hermosa Realty Inc. Properties',
+      'description': 'Premier leisure farm lots and mountain view residential developments.',
+      'itemListElement': properties.map((p, idx) => ({
+        '@type': 'ListItem',
+        'position': idx + 1,
+        'item': {
+          '@type': 'RealEstateListing',
+          'name': p.title,
+          'description': p.description,
+          'url': typeof window !== 'undefined' ? `${window.location.origin}/properties/${p.id}` : `https://bhri.com.ph/properties/${p.id}`,
+          'image': p.cardImage
+        }
+      }))
+    }
   });
 
   const filteredProperties = useMemo(() => {
@@ -114,6 +131,8 @@ export default function PropertiesPage() {
             filteredProperties.map((property) => (
               <article
                 key={property.id}
+                itemScope
+                itemType="https://schema.org/Accommodation"
                 data-reveal
                 className="bg-surface rounded-xl overflow-hidden border border-outline-variant group hover:shadow-lg transition-shadow duration-300 flex flex-col"
               >
@@ -121,7 +140,11 @@ export default function PropertiesPage() {
                   <img 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
                     src={property.cardImage}
-                    alt={property.title}
+                    alt={`${property.title} - ${property.badgeLocation || 'Cavite & Batangas'} ${property.typeFull || 'Leisure Community'} | Bright Hermosa Realty`}
+                    title={property.title}
+                    loading="lazy"
+                    decoding="async"
+                    itemProp="image"
                   />
                   <div className="absolute top-4 left-4 flex gap-2">
                     <span className="bg-surface-container-low text-primary px-3 py-1 rounded-full font-label-caps text-label-caps backdrop-blur-sm bg-opacity-90">

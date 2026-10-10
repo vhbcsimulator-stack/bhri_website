@@ -9,8 +9,11 @@ export default function Footer() {
           <div className="font-headline-md text-headline-md font-bold text-on-primary mb-4 flex items-center gap-2">
             <img 
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEHmhNMY_h7D0F-gwlQxBMRvHYk8ugtsyLcdO0MfwJmJG1pKNUw3gBYhK6Smd9N9JdDgACo1CStPC6kMauCOLBP8LzbHAIUDvXW4jQ4QBjz-L5xO4dIG_RjrTnUNAImMjY6CSSLrHPp5IL2KeiwntThNc-8Cd4nvGEjkAvfq55HvXWQOGSnz-34dAlmVGoCea7OV4nxKUcw4-PE3-XIDsstMm53T5fY73GkTMvsAsP7bZ8tAGF94rJrMEoGF-3Pjoqwqy3gMNCNcw" 
-              alt="Bright Hermosa Logo" 
+              alt="Bright Hermosa Realty Inc. Logo" 
+              title="Bright Hermosa Realty Inc."
               className="h-12 w-auto object-contain bg-transparent brightness-0 invert"
+              loading="lazy"
+              decoding="async"
             />
           </div>
           <a className="font-body-md text-on-primary-container mb-4" href="https://maps.app.goo.gl/hsYGGaiq8An28auLA">

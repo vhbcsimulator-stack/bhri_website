@@ -17,9 +17,30 @@ export default function JobDetailsPage() {
   useScrollReveal([career]);
 
   useSeo({
-    title: role ? role.title : 'Loading Job Details...',
-    description: role ? `${role.description || role.overview} Apply for the ${role.title} job position located in ${role.location}. Type: ${role.jobType}.` : '',
-    keywords: role ? `${role.title}, ${role.location}, real estate job, ${role.jobCategory}, Bright Hermosa Realty careers` : ''
+    title: role ? `${role.title} Career Opportunity` : 'Loading Job Details...',
+    description: role ? `${role.description || role.overview} Apply for the ${role.title} job position located in ${role.location}. Type: ${role.jobType}. Join Bright Hermosa Realty Inc.` : '',
+    keywords: role ? `${role.title}, ${role.location}, real estate job, ${role.jobCategory}, Bright Hermosa Realty careers, jobs in Cavite Batangas` : '',
+    structuredData: role ? {
+      '@context': 'https://schema.org',
+      '@type': 'JobPosting',
+      'title': role.title,
+      'description': role.description || role.overview,
+      'employmentType': role.jobType?.toUpperCase()?.includes('PART') ? 'PART_TIME' : 'FULL_TIME',
+      'hiringOrganization': {
+        '@type': 'Organization',
+        'name': 'Bright Hermosa Realty Inc.',
+        'sameAs': 'https://bhri.com.ph',
+        'logo': 'https://bhri.com.ph/favicon.png'
+      },
+      'jobLocation': {
+        '@type': 'Place',
+        'address': {
+          '@type': 'PostalAddress',
+          'addressLocality': role.location,
+          'addressCountry': 'PH'
+        }
+      }
+    } : undefined
   });
 
   if (isError) {
